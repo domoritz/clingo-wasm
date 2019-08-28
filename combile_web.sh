@@ -22,7 +22,8 @@ source ./emsdk_env.sh
 cd ../..
 
 # compile lua
-unzip -o lua.zip -d lua
+version=$(ls emscripten/emsdk-portable/emscripten/)
+cp -r emscripten/emsdk-portable/emscripten/$version/tests/lua lua
 cd lua
 emmake make generic local
 cd ..
