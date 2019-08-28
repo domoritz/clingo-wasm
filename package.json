@@ -9,12 +9,14 @@
   "private": false,
   "scripts": {
     "build": "tsc",
-    "deploy": "cp clingo.js clingo.wasm docs/js && gh-pages -d docs"
+    "copy": "cp clingo.js clingo.wasm examples/js",
+    "deploy": "npm run copy && gh-pages -d examples",
+    "start": "npm run copy && http-server examples"
   },
-  "dependencies": {
-    "typescript": "^3.6.2"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "gh-pages": "^2.1.1"
+    "gh-pages": "^2.1.1",
+    "http-server": "^0.11.1",
+    "typescript": "^3.6.2"
   }
 }
