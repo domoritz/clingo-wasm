@@ -23,3 +23,7 @@ Load Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-
 ```html
 <script src="https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION"></script>
 ```
+
+## Usage
+
+TODO
