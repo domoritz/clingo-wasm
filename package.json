@@ -8,9 +8,15 @@
   "license": "Apache-2.0",
   "private": false,
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "copy": "cp clingo.js clingo.wasm examples/js",
+    "deploy": "npm run copy && gh-pages -d examples",
+    "start": "npm run copy && http-server examples"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "gh-pages": "^2.1.1",
+    "http-server": "^0.11.1",
     "typescript": "^3.6.2"
   }
 }

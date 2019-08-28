@@ -1,0 +1,22 @@
+#output {
+  margin: 10px auto;
+  font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  text-align:left;
+}
+#input {
+  margin: 10px auto;
+  text-align:left;
+  font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+.hlist {
+  display: block;
+}
+.hlist li {
+  display: inline;
+  padding-right: .7em;
+  padding-left: .7em;
+}
+.center {
+  text-align:center;
+}
+
