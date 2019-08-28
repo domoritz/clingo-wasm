@@ -6,7 +6,7 @@
 
 [Clingo](https://github.com/potassco/clingo) compiled to [WebAssembly](https://webassembly.org/) with [Emscripten](https://kripken.github.io/emscripten-site/).
 
-This is work in progress. 
+**This is work in progress.**
 
 This repo combines work from two rpevious repos: https://github.com/Aluriak/webclingo-example and https://github.com/domoritz/wasm-clingo.
 
