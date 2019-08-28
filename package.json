@@ -8,9 +8,13 @@
   "license": "Apache-2.0",
   "private": false,
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "deploy": "cp clingo.js clingo.wasm docs/js && gh-pages -d docs"
   },
   "dependencies": {
     "typescript": "^3.6.2"
+  },
+  "devDependencies": {
+    "gh-pages": "^2.1.1"
   }
 }
