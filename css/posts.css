@@ -1,0 +1,40 @@
+#search_area {
+  width: 200px;
+  position: relative;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+
+#search {
+  font-size: 17px;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  color: #666;
+  padding: 3px 27px 3px 27px;
+  background: url(/images/magnifier.png) 7px 6px no-repeat;
+  width: 100%;
+  margin: 0;
+}
+
+#search:focus {
+  outline: none;
+}
+
+#search_area img {
+  position: absolute;
+  right: -48px;
+  top: 7px;
+  display: block;
+}
+
+#search_area label {
+  font-size: 17px;
+  position: absolute;
+  top: 4px;
+  left: 29px;
+  color: #ccc;
+  cursor: text;
+  padding: 0;
+}
+
+
