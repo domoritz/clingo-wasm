@@ -1,0 +1,16 @@
+{
+  "name": "clingo-wasm",
+  "version": "0.0.1",
+  "description": "Clingo compiled to WebAssembly",
+  "main": "build/index.js",
+  "repository": "https://github.com/domoritz/clingo-wasm",
+  "author": "Dominik Moritz <domoritz@gmail.com>",
+  "license": "Apache-2.0",
+  "private": false,
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "typescript": "^3.6.2"
+  }
+}
