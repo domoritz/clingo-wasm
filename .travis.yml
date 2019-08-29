@@ -10,3 +10,4 @@ services:
 
 script:
   - npm run build
+
