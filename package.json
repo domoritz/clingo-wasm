@@ -9,6 +9,7 @@
   "private": false,
   "type": "module",
   "scripts": {
+    "build": "docker build . -t clingo-wasm && docker run -it clingo-wasm",
     "copy": "cp clingo.js clingo.wasm examples/js",
     "deploy": "yarn copy && gh-pages -d examples",
     "start": "yarn copy && http-server examples"
