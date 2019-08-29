@@ -3,7 +3,7 @@ set -e
 set -x
 
 # Fetch and compile Lua
-lua=lua-5.1.5
+lua=lua-5.3.4
 lua_dir=$(pwd)/$lua
 wget https://www.lua.org/ftp/$lua.tar.gz
 tar -xf $lua.tar.gz
