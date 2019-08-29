@@ -14,10 +14,11 @@ cd ..
 
 # Fetch and compile Clingo.
 clingo_version=5.4.0
+clingo=clingo-$clingo_version
 wget https://github.com/potassco/clingo/archive/v$clingo_version.tar.gz -O clingo.tar.gz
 tar -xf clingo.tar.gz
 
-cd clingo-$clingo_version
+cd $clingo
 mkdir -p build/web
 cd build/web
 
@@ -42,4 +43,4 @@ make -C build/web web
 
 # Copy the results to root.
 cd ..  
-cp ./clingo/build/web/bin/clingo.* ./
+cp ./$clingo/build/web/bin/clingo.* ./

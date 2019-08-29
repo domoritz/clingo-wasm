@@ -1,4 +1,3 @@
-emscripten
 examples/js/clingo.js
 examples/js/clingo.wasm
 node_modules
