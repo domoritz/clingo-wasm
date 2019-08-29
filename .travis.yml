@@ -9,5 +9,5 @@ services:
   - docker
 
 script:
-  - npm run build
+  - yarn build
 
