@@ -1,0 +1,12 @@
+notifications:
+  email: false
+
+language: node_js
+node_js:
+  - node
+
+services:
+  - docker
+
+script:
+  - npm run build

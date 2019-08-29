@@ -4,6 +4,7 @@ set -x
 
 # Fetch and compile Lua
 lua=lua-5.1.5
+lua_dir=$(pwd)/$lua
 wget https://www.lua.org/ftp/$lua.tar.gz
 tar -xf $lua.tar.gz
 cd $lua
@@ -20,8 +21,8 @@ cd build/web
 emcmake cmake \
         -DCLINGO_BUILD_WEB=On \
         -DCLINGO_BUILD_WITH_PYTHON=Off \
-        -DLUA_INCLUDE_DIR="$(pwd)/$lua/include" \
-        -DLUA_LIBRARIES="$(pwd)/$lua/lib/liblua.a" \
+        -DLUA_INCLUDE_DIR="$lua_dir/include" \
+        -DLUA_LIBRARIES="$lua_dir/lib/liblua.a" \
         -DCLINGO_BUILD_WITH_LUA=Off \
         -DCLINGO_REQUIRE_LUA=Off \
         -DCLINGO_BUILD_SHARED=Off \
