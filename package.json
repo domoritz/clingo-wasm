@@ -10,6 +10,7 @@
   "type": "module",
   "scripts": {
     "build": "docker build . -t clingo-wasm && docker run -it clingo-wasm",
+    "build-domoritz": "docker --rm -v $(pwd):/src trzeci/emscripten /src/build.sh",
     "copy": "cp clingo.js clingo.wasm examples/js",
     "deploy": "yarn copy && gh-pages -d examples",
     "start": "yarn copy && http-server examples"
