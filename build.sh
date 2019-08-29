@@ -11,10 +11,13 @@ cd $lua
 emmake make generic local
 cd ..
 
-# Compile Clingo.
-git submodule update --init --recursive
 
-cd clingo
+# Fetch and compile Clingo.
+clingo_version=5.4.0
+wget https://github.com/potassco/clingo/archive/v$clingo_version.tar.gz -O clingo.tar.gz
+tar -xf clingo.tar.gz
+
+cd clingo-$clingo_version
 mkdir -p build/web
 cd build/web
 

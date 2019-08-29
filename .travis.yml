@@ -1,5 +1,5 @@
 notifications:
-  email: false
+  email: true
 
 language: node_js
 node_js:
@@ -9,5 +9,5 @@ services:
   - docker
 
 script:
-  - npm run build
+  - yarn build
 
