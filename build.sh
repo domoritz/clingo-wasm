@@ -8,7 +8,7 @@ lua_dir=$(pwd)/$lua
 wget https://www.lua.org/ftp/$lua.tar.gz
 tar -xf $lua.tar.gz
 cd $lua
-emmake make generic local
+emmake make generic local CC='emcc -s WASM=1'
 cd ..
 
 
@@ -25,9 +25,9 @@ cd build/web
 emcmake cmake \
         -DCLINGO_BUILD_WEB=On \
         -DCLINGO_BUILD_WITH_PYTHON=Off \
-        -DLUA_INCLUDE_DIR="$lua_dir/include" \
-        -DLUA_LIBRARIES="$lua_dir/lib/liblua.a" \
-        -DCLINGO_BUILD_WITH_LUA=on \
+        -DLUA_INCLUDE_DIR="$lua_dir/install/include" \
+        -DLUA_LIBRARIES="$lua_dir/install/lib/liblua.a" \
+        -DCLINGO_BUILD_WITH_LUA=On \
         -DCLINGO_REQUIRE_LUA=On \
         -DCLINGO_BUILD_SHARED=Off \
         -DCLASP_BUILD_WITH_THREADS=Off \
