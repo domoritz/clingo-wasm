@@ -28,7 +28,7 @@ emcmake cmake \
         -DLUA_INCLUDE_DIR="$lua_dir/include" \
         -DLUA_LIBRARIES="$lua_dir/lib/liblua.a" \
         -DCLINGO_BUILD_WITH_LUA=Off \
-        -DCLINGO_REQUIRE_LUA=Off \
+        -DCLINGO_REQUIRE_LUA=On \
         -DCLINGO_BUILD_SHARED=Off \
         -DCLASP_BUILD_WITH_THREADS=Off \
         -DCMAKE_VERBOSE_MAKEFILE=On \
