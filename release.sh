@@ -1,4 +1,4 @@
-if [[$CI]]; then
+if $CI; then
   message=$(git show -s)
   regexp="\\[Travis\\]"
   if [[ $message =~ $regexp ]]; then
