@@ -5,6 +5,18 @@ node_js:
 services:
   - docker
 
-script:
-  - yarn build
+script: >
+  message=$(git show -s)
+  regexp="\\[Travis\\]"
+  if [[ $message =~ $regexp ]]; then
+    echo "Skipping rebuild of automated commit."
+  else
+    if [[ $TRAVIS_BRANCH != 'master' ]]; then
+      yarn build
+      git add clingo.wasm clingo.js
+      git commit -m "[Travis] Automated build of WASM files (build $TRAVIS_BUILD_NUMBER)."
+    fi
+  fi
+  
+
 
