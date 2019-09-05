@@ -7,7 +7,4 @@ services:
 
 script:
   - yarn build
-  
-  
-
-
+  - source release.sh 
