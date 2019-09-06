@@ -1,4 +1,5 @@
-if $CI; then
+
+if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
   message=$(git show -s)
   regexp="\\[Travis\\]"
   if [[ $message =~ $regexp ]]; then
@@ -9,4 +10,6 @@ if $CI; then
       git commit -m "[Travis] Automated build of WASM files (build $TRAVIS_BUILD_NUMBER)."
     fi
   fi
+else
+  echo "No changes detected in WASM file."
 fi
