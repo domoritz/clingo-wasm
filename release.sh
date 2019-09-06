@@ -1,4 +1,6 @@
 
+set -e
+
 if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
   message=$(git show -s)
   regexp="\\[Travis\\]"
