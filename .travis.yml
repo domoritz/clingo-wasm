@@ -1,10 +1,11 @@
 language: node_js
 node_js:
-  - node
-
+- node
 services:
-  - docker
-
+- docker
 script:
-  - yarn build
-  - source release.sh 
+- yarn build
+- source release.sh
+env:
+  global:
+    secure: zV8tkDuBEu1+IM9/n01LsdlmW4aSaBWIWNnpOpprPbxm+Ac4oO2do/qntIVO/HFL2eiZq20Ba/lvTnrs+tC56UkMINQVoHPsadXoJ1f3VyKHQtncOy4AQOf/371qm0qOaucJW8A/rsssfE7rj8gxoqtYREGIi8jUSPCZxYAjzTgT1de/PW+o4rdUeMGUlWoo1dngc1RMCJgq5RKmoiyNzwyeh3rFOu6QcQY+H7AH1FPIbZU6Ca2ju+MzpKOhxzAwOq9r2Jd8yRVWhIq5VmGAaG5m+hkgv9MW2XGj6PQmq9nwffSaKTacw8HJ1103U/yKxA50T6nRkuS1TbLj9rCdS+W5fuM2tuf3pjE3DzOxtPjdVVdzUKImlqNyOktvL0f93jY8ISqf32g6cXiyhyFTG7WFNK+aLOfKVJwPN3PGe+C+hMjJFkCKY/XDyRKM0vHbo4E5w5kPe31ws3AG0esgvAL0W2GEphtUNRTfYB9TYDfhRKn6VMP5snthbjaKEoyiPKk0zxml0zaNGekP2zzI76bSDvV0AOBoDQgzEHjlNbmOKtKsxLnHwcZYCrNj6uuyKCbbSbiR0RfPYHoWb2kSGzljU+Mq+eFDX94sZxx6YUz/lQca5Ojq02oLqxg+co2rVfj6RN6wd91+74n8vIsgbqCaP4kftuCbfjBItOD36xY=
