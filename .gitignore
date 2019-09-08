@@ -1,6 +1,6 @@
+*.tar.gz
 clingo-*
-clingo.tar.gz
 examples/js/clingo.js
 examples/js/clingo.wasm
-lua*
+lua-*
 node_modules

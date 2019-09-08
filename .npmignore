@@ -1,8 +1,8 @@
 .vscode
+*.tar.gz
 clingo-*
-clingo.tar.gz
 examples/*
-lua*
+lua-*
 node_modules
 scripts
 yarn.lock
