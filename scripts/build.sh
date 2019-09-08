@@ -26,8 +26,8 @@ pushd build/web
 emcmake cmake \
         -DCLINGO_BUILD_WEB=On \
         -DCLINGO_BUILD_WITH_PYTHON=Off \
-        -DLUA_INCLUDE_DIR=../../$lua/install/include \
-        -DLUA_LIBRARIES=../../$lua/install/lib/liblua.a \
+        -DLUA_INCLUDE_DIR=/src/$lua/install/include \
+        -DLUA_LIBRARIES=/src/$lua/install/lib/liblua.a \
         -DCLINGO_BUILD_WITH_LUA=On \
         -DCLINGO_REQUIRE_LUA=On \
         -DCLINGO_BUILD_SHARED=Off \
