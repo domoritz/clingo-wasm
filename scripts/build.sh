@@ -5,7 +5,7 @@ set -x
 
 # Fetch and compile Lua.
 
-lua=lua-5.3.4
+lua=lua-5.3.5
 wget https://www.lua.org/ftp/$lua.tar.gz -O lua.tar.gz
 tar -xf lua.tar.gz
 pushd $lua
