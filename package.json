@@ -9,7 +9,7 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "build": "docker run -it -v $(pwd):/src trzeci/emscripten ./install_deps.sh && ./build.sh",
+    "build": "docker run -it -v /Users/domoritz/Develop/clingo-wasm:/src trzeci/emscripten bash -c 'scripts/install_deps.sh; scripts/build.sh'",
     "copy": "cp clingo.js clingo.wasm examples/js",
     "deploy": "yarn copy && gh-pages -d examples",
     "start": "yarn copy && http-server examples"
