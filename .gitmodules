@@ -1,3 +1,0 @@
-[submodule "clingo"]
-	path = clingo
-	url = git@github.com:potassco/clingo.git

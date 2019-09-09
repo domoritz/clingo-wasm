@@ -1,5 +1,6 @@
-emscripten
+*.tar.gz
+clingo-*
 examples/js/clingo.js
 examples/js/clingo.wasm
-lua
+lua-*
 node_modules

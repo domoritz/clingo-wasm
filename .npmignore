@@ -1,0 +1,8 @@
+.vscode
+*.tar.gz
+clingo-*
+examples/*
+lua-*
+node_modules
+scripts
+yarn.lock
