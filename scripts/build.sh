@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -e
-set -x
 
 # Fetch and compile Lua.
 
@@ -9,7 +8,7 @@ lua=lua-5.3.5
 wget https://www.lua.org/ftp/$lua.tar.gz -O lua.tar.gz
 tar -xf lua.tar.gz
 pushd $lua
-emmake make generic local
+emmake make generic local CC='emcc -s WASM=1'
 popd
 
 # Fetch and compile Clingo.
