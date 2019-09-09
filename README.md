@@ -9,7 +9,7 @@
 
 **This is work in progress.**
 
-This repo combines work from two rpevious repos: https://github.com/Aluriak/webclingo-example and https://github.com/domoritz/wasm-clingo.
+This repo combines work from two previous repos: https://github.com/Aluriak/webclingo-example and https://github.com/domoritz/wasm-clingo.
 
 ## Installation
 
