@@ -9,7 +9,7 @@ lua=lua-5.3.5
 wget https://www.lua.org/ftp/$lua.tar.gz -O lua.tar.gz
 tar -xf lua.tar.gz
 pushd $lua
-emmake make generic local CC='emcc -s WASM=1'
+emmake make generic local CC='emcc'
 popd
 
 # Fetch and compile Clingo.
