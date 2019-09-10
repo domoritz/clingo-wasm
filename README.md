@@ -32,4 +32,4 @@ TODO
 
 ## Updating Lua or Clingo
 
-Update the versions in `build.sh` and in the badges in this `README.md`. Then push to a new branch and let Travis build the new WASM file.
+Update the versions in `scripts/versions.sh` and in the badges in this `README.md`. Then push to a new branch and let Travis build the new WASM file.
