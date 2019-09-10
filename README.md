@@ -30,6 +30,12 @@ Load Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-
 
 TODO
 
-## Updating Lua or Clingo
+## Developers
+
+### Build WASM file
+
+Run `yarn build` if you have docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
+
+### Update Lua or Clingo
 
 Update the versions in `scripts/versions.sh` and in the badges in this `README.md`. Then push to a new branch and let Travis build the new WASM file.
