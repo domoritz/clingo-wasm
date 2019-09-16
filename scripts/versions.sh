@@ -1,4 +1,4 @@
-# Find latest version at https://github.com/emscripten-core/emsdk/blob/master/emscripten-releases-tags.txt
+# Find latest version at https://github.com/emscripten-core/emsdk/blob/master/emscripten-releases-tags.txt and https://hub.docker.com/r/trzeci/emscripten/tags
 emscripten_version=1.38.43
 
 # Find latest version at https://github.com/lua/lua/releases
