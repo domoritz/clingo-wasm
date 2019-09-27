@@ -18,6 +18,15 @@ This repo combines work from two previous repos: https://github.com/Aluriak/webc
 
 `npm install clingo-wasm` or `yarn add clingo-wasm`.
 
+The library is packaged differently for web vs NodeJS environments, so import
+accordingly.
+```js
+// From the web
+import Clingo from "clingo-wasm/web";
+// From NodeJS
+import Clingo from "clingo-wasm/node";
+```
+
 ### Without NPM
 
 Load Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-wasm).
