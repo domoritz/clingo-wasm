@@ -4,3 +4,10 @@ examples/js/clingo.js
 examples/js/clingo.wasm
 lua-*
 node_modules
+# Build products
+node.js
+web.js
+# Webpack gives the WASM file a hashed name.
+*.wasm
+# Unignore the source file.
+!clingo.wasm
