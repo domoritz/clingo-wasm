@@ -2,7 +2,8 @@
   "name": "clingo-wasm",
   "version": "0.0.1",
   "description": "Clingo compiled to WebAssembly",
-  "source": "index.js",
+  "source": "./dist/index.node.js",
+  "main": "",
   "repository": "https://github.com/domoritz/clingo-wasm",
   "author": "Dominik Moritz <domoritz@gmail.com>",
   "license": "Apache-2.0",
@@ -11,14 +12,21 @@
   "scripts": {
     "build:clingo": "scripts/build.sh",
     "build:web": "webpack",
-    "build:node": "tsc index.node.ts --outFile node.js",
+    "build:node": "tsc index.node.ts --outDir ./dist",
     "copy": "cp clingo.js clingo.wasm examples/js",
     "deploy": "yarn copy && gh-pages -d examples",
     "start": "yarn copy && http-server examples"
   },
   "dependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/chai-as-promised": "^7.1.2",
     "@types/emscripten": "^1.38.0",
-    "@types/node": "^12.7.8"
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.8",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^6.2.1",
+    "ts-mocha": "^6.0.0"
   },
   "devDependencies": {
     "exports-loader": "^0.7.0",
