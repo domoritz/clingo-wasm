@@ -15,7 +15,8 @@
     "build:node": "tsc index.node.ts --outDir ./dist",
     "copy": "cp clingo.js clingo.wasm examples/js",
     "deploy": "yarn copy && gh-pages -d examples",
-    "start": "yarn copy && http-server examples"
+    "start": "yarn copy && http-server examples",
+    "test": "ts-mocha ./test/**/*.ts"
   },
   "dependencies": {
     "@types/chai": "^4.2.3",

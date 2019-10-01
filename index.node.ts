@@ -15,7 +15,7 @@ export type ClingoResult = {
   }
 };
 
-export function run(program: string, models: number = 1) {
+export function run(program: string, models: number = 1): Promise<ClingoResult> {
   console.time("Clingo Run Time");
   return new Promise((res, rej) => {
     const results: string[] = [];
