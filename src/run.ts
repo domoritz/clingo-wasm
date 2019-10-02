@@ -1,5 +1,5 @@
 export interface ClingoResult {
-    Solver: "clingo version 5.3.1",
+    Solver: string,
     Calls: number,
     Call: { Witnesses: { Value: string[] }[] }[],
     Models: { More: "yes" | "no", Number: number },
