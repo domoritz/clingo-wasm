@@ -13,6 +13,7 @@
     "build:clingo": "scripts/build.sh",
     "build:web": "webpack",
     "build:node": "tsc index.node.ts --outDir ./dist",
+    "build": "yarn build:clingo && yarn build:web && yarn build:node",
     "copy": "cp clingo.js clingo.wasm examples/js",
     "deploy": "yarn copy && gh-pages -d examples",
     "start": "yarn copy && http-server examples",
