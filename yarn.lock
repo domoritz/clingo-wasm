@@ -3,9 +3,9 @@
 
 
 "@types/emscripten@^1.38.0":
-  version "1.39.1"
-  resolved "https://registry.yarnpkg.com/@types/emscripten/-/emscripten-1.39.1.tgz#6d2df5643ccc0f47046f9e067da10ac9a51dcbe6"
-  integrity sha512-hZGhlk+k2ofoeBla3czIFMRZ/uH8Dmi3TpZxxZMfNqukjlY7RhaWnnhnBvXXGClktUA/s6X3C7xdRpxdpuO++w==
+  version "1.39.2"
+  resolved "https://registry.yarnpkg.com/@types/emscripten/-/emscripten-1.39.2.tgz#0d537fe2f2ab50e77760c4e068eaa91ca85e8e2f"
+  integrity sha512-VxA5je1YYIkIvoCWT2t0bI7+2ID+yxv09YL5BKE6dT0xZMfY+U7EUF8vcasJSBTxjhSf2KV4P5rdDmCdEO9K0A==
 
 array-union@^1.0.1:
   version "1.0.2"
