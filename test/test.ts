@@ -208,6 +208,17 @@ describe("running queries", () => {
             { Todo: 3, Completed: false }
         ]);
 
+        history.push(["toggle_todo", {target: 1}])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 1, Text: 'edited' },
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: false },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["toggle_todo", {target: 1}])
         history.push(["destroy_todo", {target: 2}])
         expect(await getResult()).to.have.deep.members([
             { Todo: 1, Text: 'edited' },
