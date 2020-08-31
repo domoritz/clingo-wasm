@@ -58,7 +58,7 @@ describe("running queries", () => {
                 instance(A, new_todo),
                 new_text(A) = Text,
                 next_todo = Todo.
-   
+            
             occurs(A) causes completed(Todo) if
                 instance(A, toggle_all),
                 state(A) = complete.
@@ -102,16 +102,16 @@ describe("running queries", () => {
         ];
         const result = await query(queries, []);
 
-        console.log(result);
         expect(result.get(queries[0])[0]).to.deep.equal({ Todo: 1 });
         expect(result.get(queries[1])[0]).to.deep.equal({ Filter: "all" });
     });
 
-    it.only("querying history", async () => {
+    it("querying history", async () => {
         const query = makeSession(run, logic);
 
         const queries = [
             "visible(Todo), text(Todo) = Text.",
+            "completed(Todo) = Completed."
         ];
 
         const result = await query(queries, [
@@ -119,11 +119,15 @@ describe("running queries", () => {
             ["new_todo", { new_text: '"Build awesome apps"' }],
             ["new_todo", { new_text: '"Formally verify them with Flamingo"' }],
         ]);
-        console.log("Result", result);
         expect(result.get(queries[0])).to.have.deep.members([
             { Todo: 1, Text: 'Learn logic programming' },
             { Todo: 2, Text: 'Build awesome apps' },
             { Todo: 3, Text: 'Formally verify them with Flamingo' }
+        ]);
+        expect(result.get(queries[1])).to.have.deep.members([
+            { Todo: 1, Completed: false },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
         ]);
     });
 });
