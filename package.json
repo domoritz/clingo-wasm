@@ -1,6 +1,6 @@
 {
   "name": "node-clingo-wasm",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Clingo compiled to WebAssembly",
   "source": "./dist/index.node.js",
   "main": "",
@@ -19,8 +19,7 @@
     "start": "yarn copy && http-server examples",
     "test": "ts-mocha ./test/**/*.ts"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/chai": "^4.2.3",
     "@types/chai-as-promised": "^7.1.2",
@@ -35,8 +34,8 @@
     "http-server": "^0.11.1",
     "mocha": "^6.2.1",
     "ts-loader": "^6.1.2",
-    "typescript": "^3.6.3",
     "ts-mocha": "^6.0.0",
+    "typescript": "^3.6.3",
     "watch": "^1.0.2",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9"
