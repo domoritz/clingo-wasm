@@ -11,7 +11,7 @@ describe("running queries", () => {
         sorts
             todos :: 1..3
             filters :: { all, active, completed }
-
+            
             new_todo :: actions
                 attributes
                     new_text : strings
@@ -22,11 +22,11 @@ describe("running queries", () => {
             destroy_todo :: todo_action
             edit_todo :: todo_action
                 attributes
-                    text : strings
+                    edit_text : strings
 
             set_all :: actions
                 attributes
-                    state: todo_state
+                    set_completed: booleans
             clear_completed :: actions
             set_active_filter :: actions
                 attributes
@@ -36,8 +36,6 @@ describe("running queries", () => {
         fluents
             basic 
                 next_todo : todos
-        
-                destroyed : todos -> booleans
         
                 text : todos -> strings
 
@@ -49,6 +47,9 @@ describe("running queries", () => {
             defined
                 visible : todos -> booleans
         axioms
+            complement(true) = false.
+            complement(false) = true.
+
             occurs(A) causes
                 text(Todo) = Text,
                 completed(Todo) = false,
@@ -59,14 +60,6 @@ describe("running queries", () => {
                 new_text(A) = Text,
                 next_todo = Todo.
             
-            occurs(A) causes completed(Todo) if
-                instance(A, toggle_all),
-                state(A) = complete.
-
-            occurs(A) causes -completed(Todo) if
-                instance(A, toggle_all),
-                state(A) = incomplete.
-
             occurs(A) causes completed(Todo) = Comp if
                 instance(A, toggle_todo),
                 target(A) = Todo,
@@ -76,9 +69,17 @@ describe("running queries", () => {
             occurs(A) causes text(Todo) = Text if
                 instance(A, edit_todo),
                 target(A) = Todo,
-                text(A) = Text.
-    
-            occurs(A) causes destroyed(Todo) if
+                edit_text(A) = Text.
+
+            occurs(A) causes -active(Todo) if
+                instance(A, destroy_todo),
+                target(A) = Todo.
+
+            occurs(A) causes completed(Todo) = Completed if
+                instance(A, set_all),
+                set_completed(A) = Completed.
+
+            occurs(A) causes -active(Todo) if
                 instance(A, clear_completed),
                 completed(Todo).
 
@@ -128,6 +129,87 @@ describe("running queries", () => {
             { Todo: 1, Completed: false },
             { Todo: 2, Completed: false },
             { Todo: 3, Completed: false }
+        ]);
+    });
+
+    it.only("action sequence works correctly", async () => {
+        const query = makeSession(run, logic);
+        const queries = [
+            "visible(Todo), text(Todo) = Text.",
+            "completed(Todo) = Completed.",
+        ];
+        
+        const getResult = async () => {
+            const result = await query(queries, history);
+            return (result.get(queries[0]) ?? [])
+            .concat(result.get(queries[1]))
+        };
+
+        const history = [
+            ["new_todo", { new_text: '"Learn logic programming"' }],
+            ["new_todo", { new_text: '"Build awesome apps"' }],
+            ["new_todo", { new_text: '"Formally verify them with Flamingo"' }]
+        ] as any;
+
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 1, Text: 'Learn logic programming' },
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: false },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["edit_todo", {target: 1, edit_text: "edited"}])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 1, Text: 'edited' },
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: false },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["toggle_todo", {target: 1}])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 1, Text: 'edited' },
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: true },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["destroy_todo", {target: 2}])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 1, Text: 'edited' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: true },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["clear_completed", {}])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: true },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["set_all", {set_completed: true}])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: true },
+            { Todo: 2, Completed: true },
+            { Todo: 3, Completed: true }
+        ]);
+
+        history.push(["set_active_filter", {filter: "active"}])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 1, Completed: true },
+            { Todo: 2, Completed: true },
+            { Todo: 3, Completed: true }
         ]);
     });
 });

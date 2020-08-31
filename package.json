@@ -17,7 +17,7 @@
     "copy": "cp clingo.js clingo.wasm examples/js",
     "deploy": "yarn copy && gh-pages -d examples",
     "start": "yarn copy && http-server examples",
-    "test": "ts-mocha ./test/**/*.ts"
+    "test": "ts-mocha ./test/**/*.ts --timeout 20000"
   },
   "dependencies": {},
   "devDependencies": {
