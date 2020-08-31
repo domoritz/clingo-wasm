@@ -107,7 +107,7 @@ describe("running queries", () => {
         expect(result.get(queries[1])[0]).to.deep.equal({ Filter: "all" });
     });
 
-    it("querying history", async () => {
+    it.only("querying history", async () => {
         const query = makeSession(run, logic);
 
         const queries = [
@@ -115,15 +115,15 @@ describe("running queries", () => {
         ];
 
         const result = await query(queries, [
-            ["new_todo", { new_text: "todo1" }],
-            ["new_todo", { new_text: "todo2" }],
-            ["new_todo", { new_text: "todo3" }],
+            ["new_todo", { new_text: '"Learn logic programming"' }],
+            ["new_todo", { new_text: '"Build awesome apps"' }],
+            ["new_todo", { new_text: '"Formally verify them with Flamingo"' }],
         ]);
         console.log("Result", result);
         expect(result.get(queries[0])).to.have.deep.members([
-            { Todo: 1, Text: 'todo1' },
-            { Todo: 2, Text: 'todo2' },
-            { Todo: 3, Text: 'todo3' }
+            { Todo: 1, Text: 'Learn logic programming' },
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' }
         ]);
     });
 });
