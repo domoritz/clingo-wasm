@@ -1,5 +1,5 @@
 {
-  "name": "clingo-wasm",
+  "name": "node-clingo-wasm",
   "version": "0.0.1",
   "description": "Clingo compiled to WebAssembly",
   "source": "./dist/index.node.js",
@@ -8,7 +8,6 @@
   "author": "Dominik Moritz <domoritz@gmail.com>",
   "license": "Apache-2.0",
   "private": false,
-  "type": "module",
   "types": "./dist/index.node.d.ts",
   "scripts": {
     "build:clingo": "scripts/build.sh",
