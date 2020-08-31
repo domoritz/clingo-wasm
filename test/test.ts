@@ -107,7 +107,7 @@ describe("running queries", () => {
         expect(result.get(queries[1])[0]).to.deep.equal({ Filter: "all" });
     });
 
-    it.only("querying history", async () => {
+    it("querying history", async () => {
         const query = makeSession(run, logic);
 
         const queries = [
