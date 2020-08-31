@@ -6,17 +6,15 @@ use(asPromised);
 
 import { run } from "../index.node";
 describe("running queries", () => {
-    const logic0 = `
+    const logic = `
         module todomvc
         sorts
             todos :: 1..3
-            todo_state :: { complete, incomplete }
             filters :: { all, active, completed }
 
             new_todo :: actions
                 attributes
-                    text : strings
-
+                    new_text : strings
             todo_action :: actions
                 attributes
                     target : todos
@@ -51,16 +49,14 @@ describe("running queries", () => {
             defined
                 visible : todos -> booleans
         axioms
-            complement(true) = false.
-            complement(false) = true.
-    
             occurs(A) causes
                 text(Todo) = Text,
                 completed(Todo) = false,
+                active(Todo),
                 next_todo = Todo + 1
             if
                 instance(A, new_todo),
-                text(A) = Text,
+                new_text(A) = Text,
                 next_todo = Todo.
    
             occurs(A) causes completed(Todo) if
@@ -89,46 +85,10 @@ describe("running queries", () => {
             occurs(A) causes active_filter = F if
                 instance(A, set_active_filter),
                 filter(A) = F.
-
+            
             visible(Todo) if active(Todo), active_filter = all.
             visible(Todo) if active(Todo), completed(Todo), active_filter = completed.
             visible(Todo) if active(Todo), -completed(Todo), active_filter = active.
- 
-        initially
-            next_todo = 1.
-            active_filter = all.
-        `;
-
-    const logic = `
-        module todomvc
-        sorts
-            todos :: 1..3
-            filters :: { all, active, completed }
-
-            new_todo :: actions
-                attributes
-                    new_text : string
-        fluents
-            basic 
-                next_todo : todos
-        
-                text : todos -> strings
-
-                active : todos -> booleans
-
-                active_filter : filters
-            defined
-                visible : todos -> booleans
-        axioms
-            occurs(A) causes
-                text(Todo) = Text,
-                next_todo = Todo + 1
-            if
-                instance(A, new_todo),
-                new_text(A) = Text,
-                next_todo = Todo.
-   
-            visible(Todo) if active(Todo), active_filter = all.
         initially
             next_todo = 1.
             active_filter = all.
@@ -141,7 +101,7 @@ describe("running queries", () => {
             "active_filter = Filter."
         ];
         const result = await query(queries, []);
-        
+
         console.log(result);
         expect(result.get(queries[0])[0]).to.deep.equal({ Todo: 1 });
         expect(result.get(queries[1])[0]).to.deep.equal({ Filter: "all" });
@@ -155,12 +115,16 @@ describe("running queries", () => {
         ];
 
         const result = await query(queries, [
-            ["new_todo",  {new_text: "todo1"}],
-            ["new_todo",  {new_text: "todo2"}],
-            ["new_todo",  {new_text: "todo3"}],
+            ["new_todo", { new_text: "todo1" }],
+            ["new_todo", { new_text: "todo2" }],
+            ["new_todo", { new_text: "todo3" }],
         ]);
-        console.log(result);
-        expect(result.get(queries[0])[0].Todo).to.have.members([1, 2, 3]);
+        console.log("Result", result);
+        expect(result.get(queries[0])).to.have.deep.members([
+            { Todo: 1, Text: 'todo1' },
+            { Todo: 2, Text: 'todo2' },
+            { Todo: 3, Text: 'todo3' }
+        ]);
     });
 });
 
