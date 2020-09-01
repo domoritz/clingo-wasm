@@ -37,7 +37,7 @@ describe("running queries", () => {
     const logic = `
         module todomvc
         sorts
-            todos :: 1..3
+            todos :: 1..4
             filters :: { all, active, completed }
             
             new_todo :: actions
@@ -130,7 +130,7 @@ describe("running queries", () => {
             "active_filter = Filter."
         ];
         const result = await query(queries, []);
-
+        console.log(result);
         expect(result.get(queries[0])[0]).to.deep.equal({ Todo: 1 });
         expect(result.get(queries[1])[0]).to.deep.equal({ Filter: "all" });
     });
@@ -164,13 +164,13 @@ describe("running queries", () => {
         const query = makeSession(run, logic);
         const queries = [
             "visible(Todo), text(Todo) = Text.",
-            "completed(Todo) = Completed.",
+            "completed(Todo) = Completed, active(Todo).",
         ];
-        
+
         const getResult = async () => {
             const result = await query(queries, history);
             return (result.get(queries[0]) ?? [])
-            .concat(result.get(queries[1]))
+                .concat(result.get(queries[1]))
         };
 
         const history = [
@@ -188,7 +188,7 @@ describe("running queries", () => {
             { Todo: 3, Completed: false }
         ]);
 
-        history.push(["edit_todo", {target: 1, edit_text: "edited"}])
+        history.push(["edit_todo", { target: 1, edit_text: "edited" }])
         expect(await getResult()).to.have.deep.members([
             { Todo: 1, Text: 'edited' },
             { Todo: 2, Text: 'Build awesome apps' },
@@ -198,7 +198,7 @@ describe("running queries", () => {
             { Todo: 3, Completed: false }
         ]);
 
-        history.push(["toggle_todo", {target: 1}])
+        history.push(["toggle_todo", { target: 1 }])
         expect(await getResult()).to.have.deep.members([
             { Todo: 1, Text: 'edited' },
             { Todo: 2, Text: 'Build awesome apps' },
@@ -208,7 +208,7 @@ describe("running queries", () => {
             { Todo: 3, Completed: false }
         ]);
 
-        history.push(["toggle_todo", {target: 1}])
+        history.push(["toggle_todo", { target: 1 }])
         expect(await getResult()).to.have.deep.members([
             { Todo: 1, Text: 'edited' },
             { Todo: 2, Text: 'Build awesome apps' },
@@ -218,37 +218,106 @@ describe("running queries", () => {
             { Todo: 3, Completed: false }
         ]);
 
-        history.push(["toggle_todo", {target: 1}])
-        history.push(["destroy_todo", {target: 2}])
+        history.push(["toggle_todo", { target: 1 }])
+        history.push(["destroy_todo", { target: 2 }])
         expect(await getResult()).to.have.deep.members([
             { Todo: 1, Text: 'edited' },
             { Todo: 3, Text: 'Formally verify them with Flamingo' },
             { Todo: 1, Completed: true },
-            { Todo: 2, Completed: false },
             { Todo: 3, Completed: false }
         ]);
 
         history.push(["clear_completed", {}])
         expect(await getResult()).to.have.deep.members([
             { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["set_all", { set_completed: true }])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 3, Completed: true }
+        ]);
+
+        history.push(["new_todo", { new_text: '"A new todo"' }]);
+        history.push(["set_active_filter", { filter: "active" }])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 4, Text: 'A new todo' },
+            { Todo: 3, Completed: true },
+            { Todo: 4, Completed: false }
+        ]);
+    });
+
+    it("negation works", async () => {
+        const query = makeSession(run, logic);
+        const queries = [
+            "visible(Todo), text(Todo) = Text.",
+            "completed(Todo) = Completed.",
+        ];
+
+        const getResult = async () => {
+            const result = await query(queries, history);
+            return (result.get(queries[0]) ?? [])
+                .concat(result.get(queries[1]))
+        };
+
+        const history = [
+            ["new_todo", { new_text: '"Learn logic programming"' }],
+            ["new_todo", { new_text: '"Build awesome apps"' }],
+            ["new_todo", { new_text: '"Formally verify them with Flamingo"' }]
+        ] as any;
+
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 1, Text: 'Learn logic programming' },
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: false },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["set_active_filter", { filter: "active" }])
+        expect(await getResult()).to.have.deep.members([
+             { Todo: 1, Text: 'Learn logic programming' },
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: false },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["set_active_filter", { filter: "completed" }])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 1, Completed: false },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["set_active_filter", { filter: "active" }])
+        expect(await getResult()).to.have.deep.members([
+             { Todo: 1, Text: 'Learn logic programming' },
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Completed: false },
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
+        ]);
+
+        history.push(["toggle_todo", { target: 1 }])
+        expect(await getResult()).to.have.deep.members([
+            { Todo: 2, Text: 'Build awesome apps' },
+            { Todo: 3, Text: 'Formally verify them with Flamingo' },
             { Todo: 1, Completed: true },
             { Todo: 2, Completed: false },
             { Todo: 3, Completed: false }
         ]);
 
-        history.push(["set_all", {set_completed: true}])
+        history.push(["set_active_filter", { filter: "completed" }])
         expect(await getResult()).to.have.deep.members([
-            { Todo: 3, Text: 'Formally verify them with Flamingo' },
+            { Todo: 1, Text: 'Learn logic programming' },
             { Todo: 1, Completed: true },
-            { Todo: 2, Completed: true },
-            { Todo: 3, Completed: true }
-        ]);
-
-        history.push(["set_active_filter", {filter: "active"}])
-        expect(await getResult()).to.have.deep.members([
-            { Todo: 1, Completed: true },
-            { Todo: 2, Completed: true },
-            { Todo: 3, Completed: true }
+            { Todo: 2, Completed: false },
+            { Todo: 3, Completed: false }
         ]);
     });
 });
