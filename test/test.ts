@@ -130,7 +130,6 @@ describe("running queries", () => {
             "active_filter = Filter."
         ];
         const result = await query(queries, []);
-        console.log(result);
         expect(result.get(queries[0])[0]).to.deep.equal({ Todo: 1 });
         expect(result.get(queries[1])[0]).to.deep.equal({ Filter: "all" });
     });
