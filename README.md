@@ -12,6 +12,8 @@
 
 This repo combines work from two previous repos: https://github.com/Aluriak/webclingo-example and https://github.com/domoritz/wasm-clingo.
 
+Try it online at https://domoritz.github.io/clingo-wasm.
+
 ## Installation
 
 ### Using NPM or Yarn
@@ -38,4 +40,4 @@ Run `yarn build` if you have docker. For testing purposes, you can run `scripts/
 
 ### Update Lua or Clingo
 
-Update the versions in `scripts/versions.sh` and in the badges in this `README.md`. Then push to a new branch and let Travis build the new WASM file.
+Update the versions in `scripts/versions.sh` and in the badges in this `README.md`. Then push to a new branch and let GitHub actions build the new WASM file.
