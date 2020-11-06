@@ -1,0 +1,17 @@
+name: Build WASM
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build WASM
+        run: scripts/build.sh
+      - name: Commit WASM
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'domoritz@users.noreply.github.com'
+          git commit -am "[CI] Automated build of WASM files."
+          git push
