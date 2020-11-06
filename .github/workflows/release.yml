@@ -11,7 +11,12 @@ jobs:
         run: scripts/build.sh
       - name: Commit WASM
         run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'domoritz@users.noreply.github.com'
-          git commit -am "[CI] Automated build of WASM files."
-          git push
+          if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+            git config --global user.name 'GitHub Action'
+            git config --global user.email 'domoritz@users.noreply.github.com'
+            git add clingo.wasm clingo.js
+            git commit -m "[CI] Automated build of WASM files."
+            git push
+          else
+            echo "No changes detected in WASM file."
+          fi
