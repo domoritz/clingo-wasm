@@ -1,6 +1,3 @@
-# Find latest version at https://github.com/emscripten-core/emsdk/blob/master/emscripten-releases-tags.txt and https://hub.docker.com/r/trzeci/emscripten/tags
-emscripten_version=1.39.18
-
 # Find latest version at https://github.com/lua/lua/releases
 lua_version=5.3.5
 

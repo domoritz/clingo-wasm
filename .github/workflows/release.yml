@@ -7,8 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: mymindstorm/setup-emsdk@v7
+        with:
+            version: 2.0.15
+
+      - name: Install dependencies
+        run: scripts/install_deps.sh
+
       - name: Build WASM
-        run: scripts/build.sh
+        run: scripts/build_clingo.sh
+
       - name: Commit WASM
         run: |
           if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
