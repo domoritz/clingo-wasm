@@ -5,4 +5,4 @@ emscripten_version=2.0.15
 lua_version=5.3.5
 
 # Find latest version at https://github.com/potassco/clingo/releases
-clingo_version=5.4.0
+clingo_version=5.4.1
