@@ -7,9 +7,7 @@
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "./dist",
-    "allowJs": true,
-    "downlevelIteration": true,
-    "esModuleInterop": true
+    "allowJs": true
   },
   "files": ["src/index.web.ts", "src/index.node.ts"]
 }
