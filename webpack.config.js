@@ -9,7 +9,8 @@ module.exports = [
       rules: [
         {
           test: /\.worker\.ts$/,
-          use: { loader: "worker-loader" },
+          loader: "worker-loader",
+          options: { inline: "fallback" },
         },
         {
           test: /clingo\.js$/,

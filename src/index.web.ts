@@ -1,7 +1,7 @@
 export type { ClingoResult } from "./run";
 
 import type { RunFunction, ClingoResult } from "./run";
-import Worker from "./run.worker";
+import Worker, { Messages } from "./run.worker";
 
 const worker = new Worker();
 
@@ -19,7 +19,18 @@ export async function run(
     worker.onmessage = (event) => {
       resolve(event.data);
     };
-    worker.postMessage(args);
+    const message: Messages = { type: "run", args };
+    worker.postMessage(message);
+  });
+}
+
+export async function init(wasmUrl: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    worker.onmessage = (event) => {
+      resolve(event.data);
+    };
+    const message: Messages = { type: "init", wasmUrl };
+    worker.postMessage(message);
   });
 }
 
