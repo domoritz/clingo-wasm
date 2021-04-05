@@ -7,6 +7,9 @@
   "license": "Apache-2.0",
   "private": false,
   "main": "dist/clingo.node.js",
+  "module": "dist/clingo.node.js",
+  "jsdelivr": "dist/dist/clingo.web.js",
+  "unpkg": "dist/dist/clingo.web.js",
   "types": "dist/index.node.d.ts",
   "scripts": {
     "build:wasm": "scripts/build.sh",
@@ -44,8 +47,8 @@
     "worker-loader": "^3.0.8"
   },
   "browser": {
-    "dist/clingo.node.js": "dist/clingo.web.js",
-    "dist/index.node.d.ts": "dist/index.web.d.ts",
+    "./dist/clingo.node.js": "./dist/clingo.web.js",
+    "./dist/index.node.d.ts": "./dist/index.web.d.ts",
     "fs": false,
     "path": false,
     "child_process": false,
