@@ -40,7 +40,7 @@ We expose an UMD bundle that runs Clingo in a separate worker thread. Therefore,
 <script>
   async function main() {
     // optionally pass URL to WASM file:
-    // await clingo.init("https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/clingo.wasm")
+    // await clingo.init("https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/dist/clingo.wasm")
     console.log(await clingo.run("a. b :- a."));
     console.log(await clingo.run("{a; b; c}.", 0));
   }

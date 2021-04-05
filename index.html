@@ -12,6 +12,10 @@
       async function main() {
         console.log(await clingo.run("a. b :- a."));
         console.log(await clingo.run("{a; b; c}.", 0));
+
+        console.log(await clingo.run(":- a. :- b.", 0));
+
+        console.log(await clingo.run("foo", 0));
       }
 
       main();

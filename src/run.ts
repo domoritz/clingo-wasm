@@ -20,6 +20,13 @@ export interface ClingoResult {
     Total: number;
     Unsat: number;
   };
+
+  Warnings: string[];
+}
+
+export interface ClingoError {
+  Result: "ERROR";
+  Error: string;
 }
 
 interface ClingoModule extends EmscriptenModule {
@@ -28,6 +35,7 @@ interface ClingoModule extends EmscriptenModule {
 
 export class Runner {
   private results: string[] = [];
+  private errors: string[] = [];
   private clingo: ClingoModule;
 
   constructor(private extraParams: Partial<EmscriptenModule> = {}) {}
@@ -39,7 +47,7 @@ export class Runner {
     if (!this.clingo) {
       const params: Partial<EmscriptenModule> = {
         print: (line) => this.results.push(line),
-        printErr: console.error,
+        printErr: (line) => this.errors.push(line),
         ...this.extraParams,
       };
 
@@ -53,20 +61,27 @@ export class Runner {
   }
 
   run(program: string, models: number = 1, options: string[] = []) {
-    console.time("Run");
     this.results = [];
+    this.errors = [];
 
-    this.clingo.ccall(
-      "run",
-      "number",
-      ["string", "string"],
-      [program, `--outf=2 ${options.join(" ")} ${models}`]
-    );
-
-    console.timeEnd("Run");
+    try {
+      this.clingo.ccall(
+        "run",
+        "number",
+        ["string", "string"],
+        [program, `--outf=2 ${options.join(" ")} ${models}`]
+      );
+    } catch (e) {
+      return {
+        Result: "ERROR",
+        Error: this.errors.join("\n"),
+      } as ClingoError;
+    }
 
     const parsedResults = JSON.parse(this.results.join(""));
     delete parsedResults.Input;
+
+    parsedResults.Warnings = this.errors.join("\n").split("\n\n");
 
     return parsedResults as ClingoResult;
   }

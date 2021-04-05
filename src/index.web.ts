@@ -1,6 +1,6 @@
 export type { ClingoResult } from "./run";
 
-import type { RunFunction, ClingoResult } from "./run";
+import type { RunFunction } from "./run";
 import Worker, { Messages } from "./run.worker";
 
 const worker = new Worker();
@@ -14,10 +14,14 @@ const worker = new Worker();
  */
 export async function run(
   ...args: Parameters<RunFunction>
-): Promise<ClingoResult> {
+): Promise<ReturnType<RunFunction>> {
   return new Promise((resolve, reject) => {
     worker.onmessage = (event) => {
-      resolve(event.data);
+      const { data: result } = event;
+      if (result.Result === "ERROR") {
+        reject(result);
+      }
+      resolve(result);
     };
     const message: Messages = { type: "run", args };
     worker.postMessage(message);
