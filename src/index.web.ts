@@ -18,9 +18,6 @@ export async function run(
   return new Promise((resolve, reject) => {
     worker.onmessage = (event) => {
       const { data: result } = event;
-      if (result.Result === "ERROR") {
-        reject(result);
-      }
       resolve(result);
     };
     const message: Messages = { type: "run", args };
