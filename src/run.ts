@@ -1,3 +1,5 @@
+import {Module} from "./clingo.js";
+
 /// <reference types="emscripten" />
 
 export interface ClingoResult {
@@ -19,30 +21,53 @@ interface ClingoModule extends EmscriptenModule {
   ccall: typeof ccall;
 }
 
-export function _run(clingoModule: EmscriptenModuleFactory<ClingoModule>) {
-  return (program: string, models: number = 1, options: string[] = []) =>
-    new Promise((res, rej) => {
-      const results: string[] = [];
+export class Runner {
+  private results: string[] = []
+  private clingo: ClingoModule
+
+  constructor(private extraParams: Partial<EmscriptenModule> = {}) {}
+
+  async init() {
+    console.info("Initialize Clingo")
+
+    // only initialize once
+    if (!this.clingo) {
       const params: Partial<EmscriptenModule> = {
-        print: (x) => results.push(x),
+        print: (line) => this.results.push(line),
         printErr: console.error,
-        postRun: [
-          () => {
-            const parsedResults = JSON.parse(results.join(""));
-            delete parsedResults.Solver;
-            delete parsedResults.Input;
-            res(parsedResults);
-          },
-        ],
+        ...this.extraParams
       };
 
-      clingoModule(params).then((clingo) => {
-        clingo.ccall(
-          "run",
-          "number",
-          ["string", "string"],
-          [program, `--outf=2 ${options.join(" ")} ${models}`]
-        );
-      });
-    }) as Promise<ClingoResult>;
+      this.clingo = await Module(params)
+    }
+  }
+
+  run(program: string, models: number = 1, options: string[] = []) {
+    console.time("Run")
+    this.results = []
+
+    this.clingo.ccall(
+      "run",
+      "number",
+      ["string", "string"],
+      [program, `--outf=2 ${options.join(" ")} ${models}`]
+    );
+
+    console.timeEnd("Run")
+
+    const parsedResults = JSON.parse(this.results.join(""));
+    delete parsedResults.Input;
+
+    return parsedResults as ClingoResult;
+  }
+}
+
+export type RunFunction = typeof Runner.prototype.run;
+
+export async function init(extraParams: Partial<EmscriptenModule> = {}): Promise<RunFunction> {
+  const runner = new Runner(extraParams)
+
+  await runner.init()
+
+  return runner.run.bind(runner);
 }

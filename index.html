@@ -9,7 +9,12 @@
 <body>
     <script src="dist/clingo.js"></script>
     <script>
-        console.log(clingo.run("a. b :- a."))
+        async function run() {
+            console.log(await clingo.run("a. b :- a."))
+            console.log(await clingo.run("{a; b; c}.", 0))
+        }
+
+        run();
     </script>
 </body>
 </html>

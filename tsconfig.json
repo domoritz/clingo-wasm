@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "module": "ES2015",
+    "module": "ESNext",
     "target": "ES2015",
+    "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "./dist",

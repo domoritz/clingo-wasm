@@ -1,7 +1,6 @@
-import { _run } from "./run";
+import { init } from "./run";
 export { ClingoResult } from "./run";
-
-const NodeClingoModule = require("./clingo");
+export { init } from "./run";
 
 /**
  * @param program The logic program you wish to run.
@@ -10,4 +9,4 @@ const NodeClingoModule = require("./clingo");
  *
  * These are described in detail in the Potassco guide: https://github.com/potassco/guide/releases/
  */
-export const run = _run(NodeClingoModule);
+export const run = init();

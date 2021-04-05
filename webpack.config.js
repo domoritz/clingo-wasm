@@ -14,17 +14,31 @@ module.exports = {
         test: /clingo\.js$/,
         loader: "exports-loader",
         options: {
-          exports: "Module",
-        },
+          exports: 'Module'
+        }
       },
       {
-        test: /clingo\.wasm$/,
-        type: "javascript/auto",
-        loader: "file-loader",
-        options: {
-          publicPath: "dist/",
-        },
+        test: /\.worker\.(js|ts)$/i,
+        use: [{
+          loader: 'comlink-loader',
+          options: {
+            singleton: true
+          }
+        }]
       },
+      {
+        test: /\.wasm$/,
+        type:
+          "javascript/auto" /** this disabled webpacks default handling of wasm */,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              publicPath: "/dist/"
+            }
+          }
+        ]
+      }
     ],
   },
   resolve: {
