@@ -1,6 +1,15 @@
-import run from "../src/index.node";
+
+import {Runner} from "../src/index.node";
 
 describe("run", () => {
+  let run;
+
+  beforeAll(async () => {
+    const runner = new Runner()
+    await runner.init()
+    run = runner.run;
+  });
+
   it("should work", async () => {
     const { Call, Time, ...result } = await run("a. b. c :- a, b.", 0);
     expect(result).toEqual({

@@ -1,30 +1,21 @@
 const path = require("path");
 
-module.exports = {
+module.exports = [{
   mode: "production",
+  target: "web",
   entry: "./src/index.web.ts",
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: "ts-loader",
-        exclude: /node_modules/,
+        test: /\.worker\.ts$/,
+        use: { loader: "worker-loader" },
       },
       {
         test: /clingo\.js$/,
         loader: "exports-loader",
         options: {
-          exports: 'Module'
-        }
-      },
-      {
-        test: /\.worker\.(js|ts)$/i,
-        use: [{
-          loader: 'comlink-loader',
-          options: {
-            singleton: true
-          }
-        }]
+          exports: "Module",
+        },
       },
       {
         test: /\.wasm$/,
@@ -34,10 +25,16 @@ module.exports = {
           {
             loader: "file-loader",
             options: {
-              publicPath: "/dist/"
-            }
-          }
-        ]
+              publicPath: "/dist/",
+              name: "clingo.wasm"
+            },
+          },
+        ],
+      },
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
       }
     ],
   },
@@ -45,13 +42,46 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: "clingo.js",
+    filename: "clingo.web.js",
     path: path.resolve(__dirname, "./dist"),
     library: "clingo",
-    libraryTarget: "umd",
-  },
-  experiments: {
-    topLevelAwait: true,
-    asyncWebAssembly: true
+    libraryTarget: "umd"
   }
-};
+}, {
+  mode: "production",
+  target: 'node',
+  entry: "./src/index.node.ts",
+  module: {
+    rules: [
+      // {
+      //   test: /clingo\.js$/,
+      //   loader: "exports-loader",
+      //   options: {
+      //     exports: "Module",
+      //   },
+      // },
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      }
+    ],
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  output: {
+    filename: "clingo.node.js",
+    path: path.resolve(__dirname, "./dist")
+  },
+}];

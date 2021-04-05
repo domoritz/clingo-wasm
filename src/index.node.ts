@@ -1,12 +1,21 @@
-import { init } from "./run";
-export { ClingoResult } from "./run";
-export { init } from "./run";
+import { init, Runner, ClingoResult, RunFunction } from "./run";
 
-/**
- * @param program The logic program you wish to run.
- * @param models The number of models you wish returned. Defaults to 1.
- * @param options You pass in a string enumerating command line options for Clingo.
- *
- * These are described in detail in the Potassco guide: https://github.com/potassco/guide/releases/
- */
-export const run = init();
+let _run: RunFunction;
+
+const runPromise = init()
+
+async function run(...args: Parameters<RunFunction>): Promise<ClingoResult> {
+  if (!_run) {
+    _run = await runPromise;
+  }
+  return _run(...args)
+}
+
+export {
+    Runner,
+    ClingoResult,
+    RunFunction,
+    init
+};
+
+export default run;

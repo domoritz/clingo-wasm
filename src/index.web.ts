@@ -1,19 +1,11 @@
-export { ClingoResult } from "./run";
-import type { RunFunction, ClingoResult } from './run';
-import { init } from "./run";
+export type { ClingoResult } from "./run";
 
-const clingoModule = require("./clingo.wasm").default;
+import type { RunFunction, ClingoResult } from "./run";
+import Worker from "./run.worker";
 
-const runPromise = init({
-  locateFile(path) {
-    if (path.endsWith(".wasm")) {
-      return clingoModule;
-    }
-    return path;
-  },
-})
+const worker = new Worker();
 
-let _run: RunFunction;
+console.log("hello")
 
 /**
  * @param program The logic program you wish to run.
@@ -23,8 +15,12 @@ let _run: RunFunction;
  * These are described in detail in the Potassco guide: https://github.com/potassco/guide/releases/
  */
 export async function run(...args: Parameters<RunFunction>): Promise<ClingoResult> {
-  if (!_run) {
-    _run = await runPromise;
-  }
-  return _run(...args)
+  return new Promise((resolve, reject) => {
+    worker.onmessage = event => {
+      resolve(event.data)
+    };
+    worker.postMessage(args);
+  })
 }
+
+export default run;

@@ -3,10 +3,10 @@ import {Module} from "./clingo.js";
 /// <reference types="emscripten" />
 
 export interface ClingoResult {
-  Solver: string;
+  Solver?: string;
   Calls: number;
   Call: { Witnesses: { Value: string[] }[] }[];
-  Models: { More: "yes" | "no"; Number: number };
+  Models: { More: "yes" | "no"; Number: number, Brave?: "yes" | "no", Consequences?: any };
   Result: "SATISFIABLE" | "UNSATISFIABLE";
   Time: {
     CPU: number;
