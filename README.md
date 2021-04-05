@@ -37,7 +37,6 @@ Load Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-
 We expose an UMD bundle that runs Clingo in a separate worker thread. Therefore, all commands need to be asynchronous.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION"></script>
 <script>
   async function main() {
     console.log(await clingo.run("a. b :- a."));
