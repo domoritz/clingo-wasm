@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clingo Web</title>
+  </head>
+  <body>
+    <script src="dist/clingo.web.js"></script>
+    <script>
+      async function main() {
+        console.log(await clingo.run("a. b :- a."));
+        console.log(await clingo.run("{a; b; c}.", 0));
+      }
+
+      main();
+    </script>
+  </body>
+</html>

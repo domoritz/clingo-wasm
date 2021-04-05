@@ -14,13 +14,19 @@ This repo combines work from two previous repos: https://github.com/Aluriak/webc
 
 Try it online at https://domoritz.github.io/clingo-wasm.
 
-## Installation
+## Installation and Usage
 
-### Using NPM or Yarn
+### Node
 
 `npm install clingo-wasm` or `yarn add clingo-wasm`.
 
-### Without NPM
+```js
+const clingo = require("clingo-wasm");
+
+clingo.run("a. b:- a.").then(console.log);
+```
+
+### In the Browser
 
 Load Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-wasm).
 
@@ -28,15 +34,29 @@ Load Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-
 <script src="https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION"></script>
 ```
 
-## Usage
+We expose an UMD bundle that runs Clingo in a separate worker thread. Therefore, all commands need to be asynchronous.
 
-TODO
+```html
+<script src="https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION"></script>
+<script>
+  async function main() {
+    console.log(await clingo.run("a. b :- a."));
+    console.log(await clingo.run("{a; b; c}.", 0));
+  }
+
+  main();
+</script>
+```
 
 ## Developers
 
 ### Build WASM file
 
-Run `yarn build` if you have docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
+Run `yarn build:wasm` if you have docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
+
+### Build and Test JavaScript
+
+Run `yarn build` to build the js files. Run `yarn test` to run tests in node.
 
 ### Update Lua or Clingo
 
