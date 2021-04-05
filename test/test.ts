@@ -1,12 +1,11 @@
-
-import {Runner} from "../src/index.node";
+import { Runner } from "../src/index.node";
 
 describe("run", () => {
   let run;
 
   beforeAll(async () => {
-    const runner = new Runner()
-    await runner.init()
+    const runner = new Runner();
+    await runner.init();
     run = runner.run;
   });
 
@@ -24,11 +23,9 @@ describe("run", () => {
   });
 
   it("should accept options", async () => {
-    const { Call, Time, ...result } = await run(
-      "a. b. c :- a, b.",
-      0,
-      ["--enum-mode brave"]
-    );
+    const { Call, Time, ...result } = await run("a. b. c :- a, b.", 0, [
+      "--enum-mode brave",
+    ]);
     expect(result).toEqual({
       Result: "SATISFIABLE",
       Models: {

@@ -12,13 +12,15 @@ const worker = new Worker();
  *
  * These are described in detail in the Potassco guide: https://github.com/potassco/guide/releases/
  */
-export async function run(...args: Parameters<RunFunction>): Promise<ClingoResult> {
+export async function run(
+  ...args: Parameters<RunFunction>
+): Promise<ClingoResult> {
   return new Promise((resolve, reject) => {
-    worker.onmessage = event => {
-      resolve(event.data)
+    worker.onmessage = (event) => {
+      resolve(event.data);
     };
     worker.postMessage(args);
-  })
+  });
 }
 
 export default run;
