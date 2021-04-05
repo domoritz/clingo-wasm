@@ -1,6 +1,6 @@
 {
   "name": "clingo-wasm",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Clingo compiled to WebAssembly",
   "repository": "https://github.com/domoritz/clingo-wasm",
   "author": "Dominik Moritz <domoritz@gmail.com>",
