@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "15"
+      - name: Install Node dependencies
+        run: yarn --frozen-lockfile
       - name: Build JS
         run: yarn build
       - name: Test
