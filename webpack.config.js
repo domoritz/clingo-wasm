@@ -33,7 +33,7 @@ module.exports = [
           ],
         },
         {
-          test: /\.tsx?$/,
+          test: /\.ts$/,
           use: "ts-loader",
           exclude: /node_modules/,
         },
@@ -56,16 +56,8 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /clingo\.js$/,
-          loader: "exports-loader",
-          options: {
-            exports: "Module",
-          },
-        },
-        {
-          test: /\.tsx?$/,
+          test: /\.ts$/,
           use: "ts-loader",
-          exclude: /node_modules/,
         },
       ],
     },
@@ -75,6 +67,7 @@ module.exports = [
     output: {
       filename: "clingo.node.js",
       path: path.resolve(__dirname, "./dist"),
+      libraryTarget: "commonjs",
     },
   },
 ];

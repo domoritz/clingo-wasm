@@ -4,7 +4,9 @@ let _run: RunFunction;
 
 const runPromise = init();
 
-async function run(...args: Parameters<RunFunction>): Promise<ClingoResult> {
+export async function run(
+  ...args: Parameters<RunFunction>
+): Promise<ClingoResult> {
   if (!_run) {
     _run = await runPromise;
   }

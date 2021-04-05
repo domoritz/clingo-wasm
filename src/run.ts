@@ -43,7 +43,12 @@ export class Runner {
         ...this.extraParams,
       };
 
-      this.clingo = await Module(params);
+      if (Module) {
+        this.clingo = await Module(params);
+      } else {
+        // for Node
+        this.clingo = await require("./clingo")(params);
+      }
     }
   }
 

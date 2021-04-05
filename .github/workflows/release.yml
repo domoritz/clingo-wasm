@@ -1,15 +1,22 @@
-name: Test Build
+name: Build WASM
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
+on: push
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build WASM and JS
-        run: yarn build:all
+      - name: Build WASM
+        run: scripts/build.sh
+      - name: Commit WASM
+        run: |
+          if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+            git config --global user.name 'GitHub Action'
+            git config --global user.email 'domoritz@users.noreply.github.com'
+            git add clingo.wasm clingo.js
+            git commit -m "[CI] Automated build of WASM files."
+            git push
+          else
+            echo "No changes detected in WASM file."
+          fi
