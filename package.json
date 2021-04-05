@@ -13,7 +13,7 @@
     "build": "rimraf dist && webpack",
     "build:all": "yarn build:wasm && yarn build",
     "watch": "webpack --mode development --watch",
-    "test": "jest test/test.js",
+    "test": "jest test/test.ts",
     "copy": "cp src/clingo.js src/clingo.wasm examples/js",
     "clean": "rimraf clingo-* lua-* *.tar.gz src/clingo.wasm src/clingo.js dist",
     "deploy": "yarn copy && gh-pages -d examples",
