@@ -5,8 +5,6 @@ import Worker from "./run.worker";
 
 const worker = new Worker();
 
-console.log("hello")
-
 /**
  * @param program The logic program you wish to run.
  * @param models The number of models you wish returned. Defaults to 1.

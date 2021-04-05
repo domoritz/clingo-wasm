@@ -53,13 +53,13 @@ module.exports = [{
   entry: "./src/index.node.ts",
   module: {
     rules: [
-      // {
-      //   test: /clingo\.js$/,
-      //   loader: "exports-loader",
-      //   options: {
-      //     exports: "Module",
-      //   },
-      // },
+      {
+        test: /clingo\.js$/,
+        loader: "exports-loader",
+        options: {
+          exports: "Module",
+        },
+      },
       {
         test: /\.tsx?$/,
         use: "ts-loader",
