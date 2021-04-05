@@ -57,4 +57,4 @@ make -C build/web web -j $procs
 
 # Copy the results to root.
 popd
-cp $clingo/build/web/bin/clingo.* ./
+cp $clingo/build/web/bin/clingo.* ./src/

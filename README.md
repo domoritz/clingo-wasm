@@ -36,7 +36,7 @@ TODO
 
 ### Build WASM file
 
-Run `yarn build` if you have docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
+Run `yarn build:wasm` if you have docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
 
 ### Update Lua or Clingo
 
