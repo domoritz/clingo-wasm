@@ -4,6 +4,7 @@
 [![CDN](https://data.jsdelivr.com/v1/package/npm/clingo-wasm/badge?style=rounded)](https://www.jsdelivr.com/package/npm/clingo-wasm)
 [![Clingo version](https://img.shields.io/badge/Clingo-5.4.1-blue)](https://github.com/potassco/clingo)
 [![Lua version](https://img.shields.io/badge/Lua-5.3.6-blue)](https://github.com/lua/lua)
+[![Emscripten version](https://img.shields.io/badge/Emscripten-2.0.16-blue)](https://emscripten.org)
 [![Build WASM](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml/badge.svg)](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml)
 
 [Clingo](https://github.com/potassco/clingo) compiled to [WebAssembly](https://webassembly.org/) with [Emscripten](https://kripken.github.io/emscripten-site/).
@@ -58,6 +59,6 @@ Run `yarn build:wasm` if you have docker. For testing purposes, you can run `scr
 
 Run `yarn build` to build the js files. Run `yarn test` to run tests in node.
 
-### Update Lua or Clingo
+### Update Lua, Clingo, or Emscripten
 
 Update the versions in `scripts/versions.sh` and in the badges in this `README.md`. Then push to a new branch and let GitHub actions build the new WASM file.
