@@ -7,7 +7,7 @@
 [![Build WASM](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml/badge.svg)](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml)
 
 [Clingo](https://github.com/potassco/clingo) compiled to [WebAssembly](https://webassembly.org/) with [Emscripten](https://kripken.github.io/emscripten-site/).
-Try it online at https://domoritz.github.io/clingo-wasm or https://next.observablehq.com/@cmudig/clingo.
+Try it online at https://observablehq.com/@cmudig/clingo or https://domoritz.github.io/clingo-wasm.
 
 **This is work in progress!**
 
