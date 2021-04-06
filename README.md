@@ -7,12 +7,11 @@
 [![Build WASM](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml/badge.svg)](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml)
 
 [Clingo](https://github.com/potassco/clingo) compiled to [WebAssembly](https://webassembly.org/) with [Emscripten](https://kripken.github.io/emscripten-site/).
+Try it online at https://domoritz.github.io/clingo-wasm or https://next.observablehq.com/@cmudig/clingo.
 
 **This is work in progress!**
 
 This repo combines work from two previous repos: https://github.com/Aluriak/webclingo-example and https://github.com/domoritz/wasm-clingo.
-
-Try it online at https://domoritz.github.io/clingo-wasm.
 
 ## Installation and Usage
 
