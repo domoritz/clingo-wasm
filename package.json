@@ -31,7 +31,7 @@
     "@babel/core": "^7.13.14",
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-typescript": "^7.13.0",
-    "@types/jest": "^26.0.22",
+    "@types/jest": "^27.0.1",
     "@types/node": "^16.4.9",
     "exports-loader": "^3.0.0",
     "file-loader": "^6.2.0",
