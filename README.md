@@ -2,9 +2,9 @@
 
 [![npm version](https://img.shields.io/npm/v/clingo-wasm.svg)](https://www.npmjs.com/package/clingo-wasm)
 [![CDN](https://data.jsdelivr.com/v1/package/npm/clingo-wasm/badge?style=rounded)](https://www.jsdelivr.com/package/npm/clingo-wasm)
-[![Clingo version](https://img.shields.io/badge/Clingo-5.5.0-blue)](https://github.com/potassco/clingo)
+[![Clingo version](https://img.shields.io/badge/Clingo-5.5.1-blue)](https://github.com/potassco/clingo)
 [![Lua version](https://img.shields.io/badge/Lua-5.3.6-blue)](https://github.com/lua/lua)
-[![Emscripten version](https://img.shields.io/badge/Emscripten-2.0.20-blue)](https://emscripten.org)
+[![Emscripten version](https://img.shields.io/badge/Emscripten-3.0.0-blue)](https://emscripten.org)
 [![Build WASM](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml/badge.svg)](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml)
 
 [Clingo](https://github.com/potassco/clingo) compiled to [WebAssembly](https://webassembly.org/) with [Emscripten](https://kripken.github.io/emscripten-site/).
@@ -53,7 +53,7 @@ We expose an UMD bundle that runs Clingo in a separate worker thread. Therefore,
 
 ### Build WASM file
 
-Run `yarn build:wasm` if you have docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
+Run `yarn build:wasm` if you have Docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
 
 ### Build and Test JavaScript
 
