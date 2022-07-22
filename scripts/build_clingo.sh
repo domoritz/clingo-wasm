@@ -2,13 +2,13 @@
 
 set -ex
 
-source ${BASH_SOURCE%/*}/versions.sh
+source "${BASH_SOURCE%/*}"/versions.sh
 
 # Get number of processors.
 
 if [ "$(uname)" == "Darwin" ]; then
     procs=$(sysctl -n hw.physicalcpu) 
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+elif [ "$(expr substr "$(uname -s)" 1 5)" == "Linux" ]; then
     procs=$(nproc)
 else
    echo "Bad platform"
@@ -27,7 +27,7 @@ popd
 # Fetch and compile Clingo.
 
 clingo=clingo-${clingo_version}
-wget https://github.com/potassco/clingo/archive/v${clingo_version}.tar.gz -O clingo.tar.gz
+wget https://github.com/potassco/clingo/archive/v"${clingo_version}".tar.gz -O clingo.tar.gz
 tar -xf clingo.tar.gz
 
 root_dir=$(pwd)  # assumes that the script is run from the root
@@ -39,8 +39,8 @@ pushd build/web
 emcmake cmake \
         -DCLINGO_BUILD_WEB=On \
         -DCLINGO_BUILD_WITH_PYTHON=Off \
-        -DLUA_INCLUDE_DIR=${root_dir}/$lua/install/include \
-        -DLUA_LIBRARIES=${root_dir}/$lua/install/lib/liblua.a \
+        -DLUA_INCLUDE_DIR="${root_dir}"/"$lua"/install/include \
+        -DLUA_LIBRARIES="${root_dir}"/"$lua"/install/lib/liblua.a \
         -DCLINGO_BUILD_WITH_LUA=On \
         -DCLINGO_REQUIRE_LUA=On \
         -DCLINGO_BUILD_SHARED=Off \
@@ -53,8 +53,8 @@ emcmake cmake \
         ../..
 
 popd
-make -C build/web web -j $procs
+make -C build/web web -j "$procs"
 
 # Copy the results to root.
 popd
-cp $clingo/build/web/bin/clingo.* ./src/
+cp "$clingo"/build/web/bin/clingo.* ./src/
