@@ -5,14 +5,24 @@ import { Module } from "./clingo.js";
 export interface ClingoResult {
   Solver?: string;
   Calls: number;
-  Call: { Witnesses: { Value: string[] }[] }[];
+
+  Call: {
+    Witnesses: {
+      Value: string[];
+      Costs?: number[];
+      Consequences?: any;
+    }[];
+  }[];
+
   Models: {
     More: "yes" | "no";
     Number: number;
     Brave?: "yes" | "no";
     Consequences?: any;
   };
-  Result: "SATISFIABLE" | "UNSATISFIABLE";
+
+  Result: "SATISFIABLE" | "UNSATISFIABLE" | "UNKNOWN" | "OPTIMUM FOUND";
+
   Time: {
     CPU: number;
     Model: number;

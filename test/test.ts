@@ -18,7 +18,28 @@ describe("run", () => {
       },
       Calls: 1,
     });
-    expect(Call[0].Witnesses[0].Value).toEqual(["b", "a", "c"]);
+    expect(Call[0].Witnesses[0]).toEqual({
+      Value: ["b", "a", "c"],
+    });
+  });
+
+  it("should support optimizations", async () => {
+    const { Call, Time, ...result } = (await run(
+      "{ a(1); a(2); a(3) }. :~ a(1). [1]",
+      0
+    )) as ClingoResult;
+    expect(result).toMatchObject({
+      Result: "OPTIMUM FOUND",
+      Models: {
+        Number: 1,
+        More: "no",
+      },
+      Calls: 1,
+    });
+    expect(Call[0].Witnesses[0]).toEqual({
+      Costs: [0],
+      Value: [],
+    });
   });
 
   it("should accept options", async () => {
@@ -35,7 +56,13 @@ describe("run", () => {
       },
       Calls: 1,
     });
-    expect(Call[0].Witnesses[0].Value).toEqual(["b", "a", "c"]);
+    expect(Call[0].Witnesses[0]).toEqual({
+      Value: ["b", "a", "c"],
+      Consequences: {
+        Open: 0,
+        True: 3,
+      },
+    });
   });
 
   it("should return warnings", async () => {
