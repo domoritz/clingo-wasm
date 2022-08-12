@@ -1,14 +1,16 @@
-name: Test Build
+name: Test
 
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
   test:
+    name: Test and Build
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node

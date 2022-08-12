@@ -1,6 +1,11 @@
 name: Build WASM
 
-on: push
+on:
+  push:
+    paths:
+      - "scripts/**"
+    branches-ignore:
+      - main
 
 jobs:
   build:
