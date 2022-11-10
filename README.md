@@ -10,8 +10,6 @@
 [Clingo](https://github.com/potassco/clingo) compiled to [WebAssembly](https://webassembly.org/) with [Emscripten](https://kripken.github.io/emscripten-site/).
 Try it online at https://observablehq.com/@cmudig/clingo or https://domoritz.github.io/clingo-wasm.
 
-**The API is not finalized and may change.**
-
 This repo combines work from two previous repos: https://github.com/Aluriak/webclingo-example and https://github.com/domoritz/wasm-clingo.
 
 ## Installation and Usage
