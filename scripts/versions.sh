@@ -2,7 +2,7 @@
 emscripten_version=3.1.56
 
 # Find latest version at https://github.com/lua/lua/releases
-lua_version=5.3.6
+lua_version=5.4.6
 
 # Find latest version at https://github.com/potassco/clingo/releases
 clingo_version=5.6.2
