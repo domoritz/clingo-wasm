@@ -2,9 +2,9 @@
 
 [![npm version](https://img.shields.io/npm/v/clingo-wasm.svg)](https://www.npmjs.com/package/clingo-wasm)
 [![CDN](https://data.jsdelivr.com/v1/package/npm/clingo-wasm/badge?style=rounded)](https://www.jsdelivr.com/package/npm/clingo-wasm)
-[![Clingo version](https://img.shields.io/badge/Clingo-5.6.2-blue)](https://github.com/potassco/clingo)
+[![Clingo version](https://img.shields.io/badge/Clingo-5.7.1-blue)](https://github.com/potassco/clingo)
 [![Lua version](https://img.shields.io/badge/Lua-5.3.6-blue)](https://github.com/lua/lua)
-[![Emscripten version](https://img.shields.io/badge/Emscripten-3.1.18-blue)](https://emscripten.org)
+[![Emscripten version](https://img.shields.io/badge/Emscripten-3.1.56-blue)](https://emscripten.org)
 [![Build WASM](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml/badge.svg)](https://github.com/domoritz/clingo-wasm/actions/workflows/release.yml)
 
 [Clingo](https://github.com/potassco/clingo) compiled to [WebAssembly](https://webassembly.org/) with [Emscripten](https://kripken.github.io/emscripten-site/).
