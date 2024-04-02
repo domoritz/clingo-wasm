@@ -1,4 +1,4 @@
-import { Module } from "./clingo.js";
+import Module from "./clingo.js";
 
 /// <reference types="emscripten" />
 
