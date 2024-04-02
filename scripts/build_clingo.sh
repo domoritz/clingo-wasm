@@ -47,7 +47,7 @@ emcmake cmake \
         -DCLASP_BUILD_WITH_THREADS=Off \
         -DCMAKE_VERBOSE_MAKEFILE=On \
         -DCMAKE_BUILD_TYPE=release \
-        -DCMAKE_CXX_FLAGS="-std=c++11 -s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1" \
+        -DCMAKE_CXX_FLAGS="-s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1" \
         -DCMAKE_EXE_LINKER_FLAGS="" \
         -DCMAKE_EXE_LINKER_FLAGS_RELEASE="" \
         ../..
