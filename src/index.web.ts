@@ -3,7 +3,7 @@ export type { ClingoResult } from "./run";
 import type { RunFunction } from "./run";
 import Worker, { Messages } from "./run.worker";
 
-const worker = new Worker();
+export const worker = new Worker();
 
 /**
  * @param program The logic program you wish to run.
