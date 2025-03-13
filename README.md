@@ -52,8 +52,7 @@ The Clingo worker can also be terminated and restarted with the following API. T
 ```html
 <script>
   async function restart() {
-    clingo.restart();  // terminate and restart the worker
-    await clingo.init("https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/dist/clingo.wasm")  // re-initialize Clingo
+    await clingo.restart("https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/dist/clingo.wasm")  // re-initialize Clingo
   }
   
   restart();
