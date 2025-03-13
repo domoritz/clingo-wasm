@@ -52,9 +52,11 @@ The Clingo worker can also be terminated and restarted with the following API. T
 ```html
 <script>
   async function restart() {
-    await clingo.restart("https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/dist/clingo.wasm")  // re-initialize Clingo
+    await clingo.restart(
+      "https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/dist/clingo.wasm"
+    ); // re-initialize Clingo
   }
-  
+
   restart();
 </script>
 ```
@@ -63,11 +65,11 @@ The Clingo worker can also be terminated and restarted with the following API. T
 
 ### Build WASM file
 
-Run `yarn build:wasm` if you have Docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
+Run `npm run build:wasm` if you have Docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
 
 ### Build and Test JavaScript
 
-Run `yarn build` to build the js files. Run `yarn test` to run tests in node.
+Run `npm run build` to build the js files. Run `npm test` to run tests in node.
 
 ### Update Lua, Clingo, or Emscripten
 

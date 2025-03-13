@@ -5,4 +5,3 @@ examples/*
 lua-*
 node_modules
 scripts/*
-yarn.lock
