@@ -3,7 +3,7 @@ export type { ClingoResult } from "./run";
 import type { RunFunction } from "./run";
 import Worker, { Messages } from "./run.worker";
 
-const worker = new Worker();
+let worker = new Worker();
 
 /**
  * @param program The logic program you wish to run.
@@ -33,6 +33,12 @@ export async function init(wasmUrl: string): Promise<void> {
     const message: Messages = { type: "init", wasmUrl };
     worker.postMessage(message);
   });
+}
+
+export async function restart(wasmUrl: string): Promise<void> {
+  worker.terminate();
+  worker = new Worker();
+  await init(wasmUrl);
 }
 
 export default run;
