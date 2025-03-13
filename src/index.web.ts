@@ -38,7 +38,7 @@ export async function init(wasmUrl: string): Promise<void> {
 export async function restart(wasmUrl: string): Promise<void> {
   worker.terminate();
   worker = new Worker();
-  init(wasmUrl);
+  await init(wasmUrl);
 }
 
 export default run;
