@@ -55,6 +55,10 @@ emcmake cmake \
 popd
 make -C build/web web -j "$procs"
 
+# Fix export issue of clingo. (Refer to #18954/#20163 in emscripten)
+echo "else if (typeof exports === 'object')" >> build/web/bin/clingo.js
+echo "  exports['Module'] = Module;" >> build/web/bin/clingo.js
+
 # Copy the results to root.
 popd
 cp "$clingo"/build/web/bin/clingo.* ./src/
