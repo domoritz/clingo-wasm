@@ -1,6 +1,6 @@
-import Module from "./clingo.js";
-
 /// <reference types="emscripten" />
+
+import { Module } from "./clingo.js";
 
 export interface ClingoResult {
   Solver?: string;
