@@ -6,12 +6,13 @@ import { ClingoError } from "../src/run";
 
 describe("run", () => {
   it("should work", async () => {
-    const { Call, Time, ...result } = (await run(
+    const { Call, ...result } = (await run(
       "a. b. c :- a, b.",
       0
     )) as ClingoResult;
     expect(result).toMatchObject({
       Result: "SATISFIABLE",
+      Time: expect.any(Object),
       Models: {
         Number: 1,
         More: "no",
@@ -19,17 +20,19 @@ describe("run", () => {
       Calls: 1,
     });
     expect(Call[0].Witnesses[0]).toEqual({
+      Time: expect.any(Number),
       Value: ["b", "a", "c"],
     });
   });
 
   it("should support optimizations", async () => {
-    const { Call, Time, ...result } = (await run(
+    const { Call, ...result } = (await run(
       "{ a(1); a(2); a(3) }. :~ a(1). [1]",
       0
     )) as ClingoResult;
     expect(result).toMatchObject({
       Result: "OPTIMUM FOUND",
+      Time: expect.any(Object),
       Models: {
         Number: 1,
         More: "no",
@@ -37,17 +40,19 @@ describe("run", () => {
       Calls: 1,
     });
     expect(Call[0].Witnesses[0]).toEqual({
+      Time: expect.any(Number),
       Costs: [0],
       Value: [],
     });
   });
 
   it("should accept options", async () => {
-    const { Call, Time, ...result } = (await run("a. b. c :- a, b.", 0, [
+    const { Call, ...result } = (await run("a. b. c :- a, b.", 0, [
       "--enum-mode brave",
     ])) as ClingoResult;
     expect(result).toMatchObject({
       Result: "SATISFIABLE",
+      Time: expect.any(Object),
       Models: {
         Number: 1,
         More: "no",
@@ -57,6 +62,7 @@ describe("run", () => {
       Calls: 1,
     });
     expect(Call[0].Witnesses[0]).toEqual({
+      Time: expect.any(Number),
       Value: ["b", "a", "c"],
       Consequences: {
         Open: 0,
