@@ -67,6 +67,9 @@ The Clingo worker can also be terminated and restarted with the following API. T
 
 Run `npm run build:wasm` if you have Docker. For testing purposes, you can run `scripts/build_clingo.sh` from the root directory of the project.
 
+### Stack Size Configuration
+The stack size is set to 1MB for more general use, while the Emscripten default is 64KB. If you need to increase the stack size to handle larger knowledge bases (and avoid buffer overflow errors) or decrease it to optimize memory usage, you can modify the `STACK_SIZE` option in the `build_clingo.sh` script before building.
+
 ### Build and Test JavaScript
 
 Run `npm run build` to build the js files. Run `npm test` to run tests in node.
@@ -74,3 +77,4 @@ Run `npm run build` to build the js files. Run `npm test` to run tests in node.
 ### Update Lua, Clingo, or Emscripten
 
 Update the versions in `scripts/versions.sh` and in the badges in this `README.md`. Then push to a new branch and let GitHub actions build the new WASM file.
+
