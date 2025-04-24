@@ -74,3 +74,4 @@ Run `npm run build` to build the js files. Run `npm test` to run tests in node.
 ### Update Lua, Clingo, or Emscripten
 
 Update the versions in `scripts/versions.sh` and in the badges in this `README.md`. Then push to a new branch and let GitHub actions build the new WASM file.
+
