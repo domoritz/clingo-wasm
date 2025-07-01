@@ -32,7 +32,7 @@
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-typescript": "^7.26.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.13.10",
+    "@types/node": "^24.0.8",
     "exports-loader": "^5.0.0",
     "file-loader": "^6.2.0",
     "gh-pages": "^6.3.0",
