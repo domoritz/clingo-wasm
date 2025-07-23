@@ -63,6 +63,18 @@ function updateOutput() {
   }
 }
 
+function shareProgram() {
+  var program = input.getValue();
+  var url = new URL(window.location.href);
+  url.searchParams.set('program', encodeURIComponent(program));
+  // Copy to clipboard
+  navigator.clipboard.writeText(url.toString()).then(function() {
+    alert('Shareable link copied to clipboard!');
+  }, function() {
+    prompt('Copy this link:', url.toString());
+  });
+}
+
 Clingo = {
   preRun: [],
   postRun: [],
@@ -122,4 +134,18 @@ var QueryString = function () {
 if (QueryString.example !== undefined) {
   ex.value = "/clingo/run/examples/" + QueryString.example;
   load_example("/clingo/run/examples/" + QueryString.example);
+}
+
+if (QueryString.program !== undefined) {
+  try {
+    var decoded = decodeURIComponent(QueryString.program);
+    input.setValue(decoded, -1);
+    // Set examples dropdown to none and disable it
+    if (ex) {
+      ex.selectedIndex = -1;
+      ex.disabled = true;
+    }
+  } catch (e) {
+    alert('Failed to decode shared program.');
+  }
 }
