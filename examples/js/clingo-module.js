@@ -67,9 +67,17 @@ function shareProgram() {
   var program = input.getValue();
   var url = new URL(window.location.href);
   url.searchParams.set('program', encodeURIComponent(program));
+  var shareButton = document.getElementById('share');
+  var originalText = shareButton.value;
+  
   // Copy to clipboard
   navigator.clipboard.writeText(url.toString()).then(function() {
-    alert('Shareable link copied to clipboard!');
+    // Change button text to "Copied"
+    shareButton.value = "Copied";
+    // Reset button text after 1 second
+    setTimeout(function() {
+      shareButton.value = originalText;
+    }, 1000);
   }, function() {
     prompt('Copy this link:', url.toString());
   });
