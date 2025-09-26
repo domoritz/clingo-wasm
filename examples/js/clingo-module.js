@@ -63,22 +63,15 @@ function updateOutput() {
   }
 }
 
-function shareProgram() {
-  var program = input.getValue();
-  var url = new URL(window.location.href);
+const shareProgram = () => {
+  const program = input.getValue();
+  const url = new URL(window.location.href);
   url.searchParams.set('program', encodeURIComponent(program));
-  var shareButton = document.getElementById('share');
-  var originalText = shareButton.value;
+  const shareButton = document.getElementById('share');
+  const originalText = shareButton.value;
   
-  // Copy to clipboard
-  navigator.clipboard.writeText(url.toString()).then(function() {
-    // Change button text to "Copied"
-    shareButton.value = "Copied";
-    // Reset button text after 1 second
-    setTimeout(function() {
-      shareButton.value = originalText;
-    }, 1000);
-  }, function() {
+  navigator.clipboard.writeText(url.toString()).then(() => {
+  }, () => {
     prompt('Copy this link:', url.toString());
   });
 }
@@ -148,11 +141,6 @@ if (QueryString.program !== undefined) {
   try {
     var decoded = decodeURIComponent(QueryString.program);
     input.setValue(decoded, -1);
-    // Set examples dropdown to none and disable it
-    if (ex) {
-      ex.selectedIndex = -1;
-      ex.disabled = true;
-    }
   } catch (e) {
     alert('Failed to decode shared program.');
   }
