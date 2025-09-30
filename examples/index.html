@@ -104,12 +104,14 @@ innocent(Suspect) :- motive(Suspect), not guilty(Suspect).</pre
                 onclick="solve()"
                 disabled
               />
-              <input
+              <button
                 type="button"
                 id="share"
-                value="Share"
                 onclick="shareProgram()"
-              />
+                title="Share a link of the current program."
+              >
+                Share
+              </button>
 
               <pre id="output" class="code"></pre>
             </div>

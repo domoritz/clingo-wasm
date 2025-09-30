@@ -139,7 +139,7 @@ if (QueryString.example !== undefined) {
 
 if (QueryString.program !== undefined) {
   try {
-    var decoded = decodeURIComponent(QueryString.program);
+    const decoded = decodeURIComponent(QueryString.program);
     input.setValue(decoded, -1);
   } catch (e) {
     alert('Failed to decode shared program.');
