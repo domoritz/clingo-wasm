@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "module": "commonjs",
+    "module": "node16",
     "target": "es2015",
     "lib": ["es2015", "dom", "ES2020.BigInt"],
-    "moduleResolution": "node",
-    "ignoreDeprecations": "6.0",
+    "moduleResolution": "node16",
     "types": ["node"],
     "declaration": true,
     "declarationMap": true,
