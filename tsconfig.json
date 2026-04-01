@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "module": "node16",
+    "rootDir": "./src",
+    "module": "preserve",
     "target": "es2015",
     "lib": ["es2015", "dom", "ES2020.BigInt"],
-    "moduleResolution": "node16",
+    "moduleResolution": "bundler",
     "types": ["node"],
     "declaration": true,
     "declarationMap": true,
