@@ -16,7 +16,7 @@ export async function run(
   ...args: Parameters<RunFunction>
 ): Promise<ReturnType<RunFunction>> {
   return new Promise((resolve, reject) => {
-    worker.onmessage = (event) => {
+    worker.onmessage = (event: MessageEvent) => {
       const { data: result } = event;
       resolve(result);
     };
@@ -27,7 +27,7 @@ export async function run(
 
 export async function init(wasmUrl: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    worker.onmessage = (event) => {
+    worker.onmessage = (event: MessageEvent) => {
       resolve(event.data);
     };
     const message: Messages = { type: "init", wasmUrl };
