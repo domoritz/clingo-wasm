@@ -46,7 +46,7 @@ interface ClingoModule extends EmscriptenModule {
 export class Runner {
   private results: string[] = [];
   private errors: string[] = [];
-  private clingo: ClingoModule;
+  private clingo!: ClingoModule;
 
   constructor(private extraParams: Partial<EmscriptenModule> = {}) {}
 
