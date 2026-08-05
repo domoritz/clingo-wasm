@@ -66,7 +66,9 @@ The Clingo worker can also be terminated and restarted with the following API. T
 The package ships two builds of Clingo: the default single-threaded one and one with thread support (`dist/clingo-mt.wasm`). The right build is picked automatically, and when threads are available you can use Clingo's parallel solving options:
 
 ```js
-await clingo.run("{a; b; c}.", 0, ["-t 4"]);
+if (clingo.supportsThreads()) {
+  await clingo.run("{a; b; c}.", 0, ["-t 4"]);
+}
 ```
 
 Threads require `SharedArrayBuffer`:

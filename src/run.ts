@@ -2,20 +2,9 @@
 
 import { Module } from "./clingo.js";
 import { Module as ModuleMt } from "./clingo-mt.js";
+import { supportsThreads } from "./threads";
 
-/**
- * Whether the environment can run the build with thread support: shared wasm
- * memory needs SharedArrayBuffer (in browsers only available on cross-origin
- * isolated pages) and the thread pool is sized from
- * navigator.hardwareConcurrency (available in workers, and in Node >= 21).
- */
-export function supportsThreads(): boolean {
-  return (
-    typeof SharedArrayBuffer !== "undefined" &&
-    typeof navigator !== "undefined" &&
-    !!navigator.hardwareConcurrency
-  );
-}
+export { supportsThreads };
 
 export interface ClingoResult {
   Solver?: string;

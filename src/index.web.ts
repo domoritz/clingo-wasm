@@ -1,4 +1,5 @@
-export type { ClingoResult } from "./run";
+export type { ClingoResult, ClingoError } from "./run";
+export { supportsThreads } from "./threads";
 
 import type { RunFunction } from "./run";
 import Worker, { Messages } from "./run.worker";
@@ -25,7 +26,7 @@ export async function run(
   });
 }
 
-export async function init(wasmUrl: string): Promise<void> {
+export async function init(wasmUrl?: string): Promise<void> {
   return new Promise((resolve, reject) => {
     worker.onmessage = (event: MessageEvent) => {
       resolve(event.data);
@@ -35,7 +36,7 @@ export async function init(wasmUrl: string): Promise<void> {
   });
 }
 
-export async function restart(wasmUrl: string): Promise<void> {
+export async function restart(wasmUrl?: string): Promise<void> {
   worker.terminate();
   worker = new Worker();
   await init(wasmUrl);
