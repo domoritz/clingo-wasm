@@ -1,13 +1,11 @@
 import type { RunFunction } from "./run";
 import { init } from "./run";
 
-const clingoWasm = require("./clingo.wasm").default;
-const clingoMtWasm = require("./clingo-mt.wasm").default;
+const clingoWasm = require("./clingo.wasm");
+const clingoMtWasm = require("./clingo-mt.wasm");
 // URL of the standalone threaded module, so its pthread workers can be spawned
-// from a real URL (this worker itself is an inline blob without one). Asset
-// modules export the URL directly, file-loader modules export it as default.
-const clingoMtJsModule = require("./clingo-mt.js?url");
-const clingoMtJs = clingoMtJsModule.default ?? clingoMtJsModule;
+// from a real URL (this worker itself is an inline blob without one).
+const clingoMtJs = require("./clingo-mt.js?url");
 
 export type Messages =
   | { type: "init"; wasmUrl?: string }

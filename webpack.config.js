@@ -32,7 +32,7 @@ module.exports = [
           resourceQuery: /url/,
           type: "asset/resource",
           generator: {
-            filename: "clingo-mt.js",
+            filename: "[base]",
             publicPath: "/dist/",
           },
         },
@@ -46,17 +46,11 @@ module.exports = [
         },
         {
           test: /\.wasm$/,
-          type:
-            "javascript/auto" /** this disabled webpacks default handling of wasm */,
-          use: [
-            {
-              loader: "file-loader",
-              options: {
-                publicPath: "/dist/",
-                name: "[name].wasm",
-              },
-            },
-          ],
+          type: "asset/resource",
+          generator: {
+            filename: "[base]",
+            publicPath: "/dist/",
+          },
         },
         {
           test: /\.ts$/,

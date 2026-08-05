@@ -23,11 +23,14 @@ fi
 # Both are compiled with native WebAssembly exceptions so that C++ exceptions
 # in Clingo and setjmp/longjmp in Lua use the wasm exception handling proposal.
 st_flags="-fwasm-exceptions"
+# Emscripten's default INCOMING_MODULE_JS_API (src/settings.js), which setting
+# the option would otherwise replace.
+default_module_api="ENVIRONMENT,arguments,canvas,dynamicLibraries,elementPointerLock,instantiateWasm,locateFile,monitorRunDependencies,noExitRuntime,noInitialRun,onAbort,onExit,onRuntimeInitialized,postRun,preInit,preRun,print,printErr,setStatus,statusMessage,stderr,stdin,stdout,thisProgram,wasm,websocket"
 # The pthread pool is sized from navigator.hardwareConcurrency (available in
 # browsers and in Node >= 21; the JS wrapper only selects this build when it
 # exists). mainScriptUrlOrBlob is added to the incoming module API so bundlers
 # can tell the pthread workers where to load the module from.
-mt_flags="-pthread -fwasm-exceptions -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency -sINCOMING_MODULE_JS_API=ENVIRONMENT,arguments,canvas,dynamicLibraries,elementPointerLock,instantiateWasm,locateFile,monitorRunDependencies,noExitRuntime,noInitialRun,onAbort,onExit,onRuntimeInitialized,postRun,preInit,preRun,print,printErr,setStatus,statusMessage,stderr,stdin,stdout,thisProgram,wasm,websocket,mainScriptUrlOrBlob"
+mt_flags="-pthread -fwasm-exceptions -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency -sINCOMING_MODULE_JS_API=$default_module_api,mainScriptUrlOrBlob"
 
 # Fetch and compile Lua, once per variant.
 
