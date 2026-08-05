@@ -61,6 +61,21 @@ The Clingo worker can also be terminated and restarted with the following API. T
 </script>
 ```
 
+### Parallel Solving
+
+The package ships two builds of Clingo: the default single-threaded one and one with thread support (`dist/clingo-mt.wasm`). The right build is picked automatically, and when threads are available you can use Clingo's parallel solving options:
+
+```js
+await clingo.run("{a; b; c}.", 0, ["-t 4"]);
+```
+
+Threads require `SharedArrayBuffer`:
+
+- In Node, this is always available (the thread pool needs `navigator.hardwareConcurrency`, so Node 21 or later).
+- In browsers, the page must be [cross-origin isolated](https://web.dev/articles/coop-coep): serve it with the `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp` headers. Pages without those headers automatically fall back to the single-threaded build.
+
+Pass at most `navigator.hardwareConcurrency` threads to `-t`; the preallocated worker pool has that size. When you pass a custom wasm URL to `clingo.init`, the single-threaded build is used since a single URL can only point at one of the two wasm files.
+
 ## Developers
 
 ### Build WASM file

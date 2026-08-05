@@ -1,6 +1,21 @@
 /// <reference types="emscripten" />
 
 import { Module } from "./clingo.js";
+import { Module as ModuleMt } from "./clingo-mt.js";
+
+/**
+ * Whether the environment can run the build with thread support: shared wasm
+ * memory needs SharedArrayBuffer (in browsers only available on cross-origin
+ * isolated pages) and the thread pool is sized from
+ * navigator.hardwareConcurrency (available in workers, and in Node >= 21).
+ */
+export function supportsThreads(): boolean {
+  return (
+    typeof SharedArrayBuffer !== "undefined" &&
+    typeof navigator !== "undefined" &&
+    !!navigator.hardwareConcurrency
+  );
+}
 
 export interface ClingoResult {
   Solver?: string;
@@ -43,30 +58,38 @@ interface ClingoModule extends EmscriptenModule {
   ccall: typeof ccall;
 }
 
+export type ClingoParams = Partial<EmscriptenModule> & {
+  /** URL (or Blob) of the standalone clingo-mt.js, used by the threaded build
+   * to spawn its pthread web workers when the module itself was bundled. */
+  mainScriptUrlOrBlob?: string | Blob;
+  /** Force the single-threaded build even when threads are supported. */
+  singleThreaded?: boolean;
+};
+
 export class Runner {
   private results: string[] = [];
   private errors: string[] = [];
   private clingo!: ClingoModule;
 
-  constructor(private extraParams: Partial<EmscriptenModule> = {}) {}
+  constructor(private extraParams: ClingoParams = {}) {}
 
   async init() {
     console.info("Initialize Clingo");
 
     // only initialize once
     if (!this.clingo) {
-      const params: Partial<EmscriptenModule> = {
+      const { singleThreaded, ...rest } = this.extraParams;
+      const params: ClingoParams = {
         print: (line) => this.results.push(line),
         printErr: (line) => this.errors.push(line),
-        ...this.extraParams,
+        ...rest,
       };
 
-      if (Module) {
-        this.clingo = await Module(params);
-      } else {
-        // for Node
-        this.clingo = await require("./clingo")(params);
-      }
+      const factory =
+        supportsThreads() && !singleThreaded
+          ? ModuleMt || require("./clingo-mt")
+          : Module || require("./clingo");
+      this.clingo = await factory(params);
     }
   }
 
@@ -111,7 +134,7 @@ export class Runner {
 export type RunFunction = typeof Runner.prototype.run;
 
 export async function init(
-  extraParams: Partial<EmscriptenModule> = {}
+  extraParams: ClingoParams = {}
 ): Promise<RunFunction> {
   const runner = new Runner(extraParams);
 

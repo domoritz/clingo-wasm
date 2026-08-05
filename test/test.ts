@@ -81,6 +81,17 @@ describe("run", () => {
     expect(Result).toBe("ERROR");
   });
 
+  it("should support parallel solving", async () => {
+    // Node supports SharedArrayBuffer unconditionally, so the threaded build
+    // is picked automatically and clingo accepts -t.
+    const { Result } = (await run(
+      "pigeon(1..8). hole(1..7). 1 { in(P,H) : hole(H) } 1 :- pigeon(P). :- hole(H), 2 { in(P,H) : pigeon(P) }.",
+      0,
+      ["-t 4"]
+    )) as ClingoResult;
+    expect(Result).toBe("UNSATISFIABLE");
+  });
+
   it("should keep working after an error", async () => {
     const error = (await run("this is invalid")) as ClingoError;
     expect(error.Result).toBe("ERROR");

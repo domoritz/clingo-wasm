@@ -17,7 +17,7 @@
     "build:all": "npm run build:wasm && npm run build",
     "watch": "webpack --mode development --watch",
     "test": "jest test/test.ts",
-    "copy": "cp src/clingo.js src/clingo.wasm examples/js",
+    "copy": "cp src/clingo.js src/clingo.wasm src/clingo-mt.js src/clingo-mt.wasm examples/js",
     "clean": "rimraf clingo-* lua-* *.tar.gz src/clingo.wasm src/clingo.js dist",
     "deploy": "npm run copy && gh-pages -d examples",
     "start:examples": "npm run copy && serve examples",
@@ -52,6 +52,9 @@
     "fs": false,
     "path": false,
     "child_process": false,
-    "crypto": false
+    "crypto": false,
+    "worker_threads": false,
+    "util": false,
+    "os": false
   }
 }
