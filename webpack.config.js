@@ -25,7 +25,20 @@ module.exports = [
           options: { inline: "fallback" },
         },
         {
-          test: /clingo\.js$/,
+          // The threaded module is also emitted as a standalone asset
+          // (imported with a ?url query) so its pthread workers can be
+          // spawned from a real URL.
+          test: /clingo-mt\.js$/,
+          resourceQuery: /url/,
+          type: "asset/resource",
+          generator: {
+            filename: "[base]",
+            publicPath: "/dist/",
+          },
+        },
+        {
+          test: /clingo(-mt)?\.js$/,
+          resourceQuery: { not: [/url/] },
           loader: "exports-loader",
           options: {
             exports: "Module",
@@ -33,17 +46,11 @@ module.exports = [
         },
         {
           test: /\.wasm$/,
-          type:
-            "javascript/auto" /** this disabled webpacks default handling of wasm */,
-          use: [
-            {
-              loader: "file-loader",
-              options: {
-                publicPath: "/dist/",
-                name: "clingo.wasm",
-              },
-            },
-          ],
+          type: "asset/resource",
+          generator: {
+            filename: "[base]",
+            publicPath: "/dist/",
+          },
         },
         {
           test: /\.ts$/,
