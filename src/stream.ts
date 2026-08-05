@@ -1,4 +1,4 @@
-import type { ClingoError, ClingoResult, RunFunction } from "./run";
+import type { AsyncRunFunction, ClingoError, ClingoResult } from "./run";
 import type { Witness } from "./witnesses";
 
 /**
@@ -7,36 +7,32 @@ import type { Witness } from "./witnesses";
  * loop, so all models are yielded right after solving finishes; in the
  * browser, solving runs in a worker and models arrive while it solves.
  */
-export function makeStream(run: (...args: Parameters<RunFunction>) => Promise<ClingoResult | ClingoError>) {
+export function makeStream(run: AsyncRunFunction) {
   return async function* stream(
     program: string,
     models: number = 1,
     options: string[] = []
   ): AsyncGenerator<Witness, ClingoResult | ClingoError> {
     const queue: Witness[] = [];
-    let notify: (() => void) | undefined;
+    let wake = () => {};
     let final: ClingoResult | ClingoError | undefined;
 
-    const done = run(program, models, options, (model) => {
+    run(program, models, options, (model) => {
       queue.push(model);
-      notify?.();
+      wake();
     }).then((result) => {
       final = result;
-      notify?.();
-      return result;
+      wake();
     });
 
-    while (true) {
-      while (queue.length) {
+    while (final === undefined || queue.length > 0) {
+      if (queue.length > 0) {
         yield queue.shift()!;
+      } else {
+        await new Promise<void>((resolve) => (wake = resolve));
       }
-      if (final !== undefined) {
-        break;
-      }
-      await new Promise<void>((resolve) => (notify = resolve));
-      notify = undefined;
     }
 
-    return done;
+    return final;
   };
 }

@@ -9,11 +9,14 @@ export interface Witness {
 /**
  * Incrementally extracts witnesses from the JSON that clingo streams to
  * stdout with --outf=2, so models can be reported while solving is still
- * running. Tracks JSON string and nesting state character by character, so it
- * does not depend on the pretty-printer's indentation or on atom contents.
+ * running. Witness objects are found by tracking brace depth inside the
+ * "Witnesses" array; JSON strings are skipped over character by character, so
+ * the parser does not depend on the pretty-printer's indentation or on atom
+ * contents.
  */
 export class WitnessParser {
   private inWitnesses = false;
+  private capturing = false;
   private inString = false;
   private escaped = false;
   private depth = 0;
@@ -23,17 +26,17 @@ export class WitnessParser {
 
   feed(line: string) {
     if (!this.inWitnesses) {
-      if (line.trim() === '"Witnesses": [') {
-        this.inWitnesses = true;
-      }
+      this.inWitnesses = line.trim() === '"Witnesses": [';
       return;
     }
 
     for (const char of line) {
+      if (this.capturing) {
+        this.buffer += char;
+      }
+
       if (this.inString) {
-        if (this.buffer) {
-          this.buffer += char;
-        }
+        // only look for the end of the string, honoring escapes
         if (this.escaped) {
           this.escaped = false;
         } else if (char === "\\") {
@@ -41,45 +44,25 @@ export class WitnessParser {
         } else if (char === '"') {
           this.inString = false;
         }
-        continue;
+      } else if (char === '"') {
+        this.inString = true;
+      } else if (char === "{") {
+        if (!this.capturing) {
+          // a new witness begins
+          this.capturing = true;
+          this.buffer = char;
+        }
+        this.depth++;
+      } else if (char === "}") {
+        if (--this.depth === 0) {
+          this.onWitness(JSON.parse(this.buffer));
+          this.capturing = false;
+        }
+      } else if (char === "]" && this.depth === 0) {
+        // the Witnesses array ends
+        this.inWitnesses = false;
+        return;
       }
-
-      switch (char) {
-        case '"':
-          this.inString = true;
-          if (this.buffer) {
-            this.buffer += char;
-          }
-          break;
-        case "{":
-          this.depth++;
-          this.buffer += char;
-          break;
-        case "}":
-          this.depth--;
-          this.buffer += char;
-          if (this.depth === 0) {
-            this.onWitness(JSON.parse(this.buffer));
-            this.buffer = "";
-          }
-          break;
-        case "]":
-          if (this.depth === 0) {
-            // end of the Witnesses array
-            this.inWitnesses = false;
-            return;
-          }
-          this.buffer += char;
-          break;
-        default:
-          if (this.buffer) {
-            this.buffer += char;
-          }
-      }
-    }
-
-    if (this.buffer) {
-      this.buffer += "\n";
     }
   }
 }

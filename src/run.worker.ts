@@ -21,7 +21,7 @@ export type Replies =
 let run: RunFunction;
 
 function reply(message: Replies) {
-  postMessage(message, undefined as any);
+  postMessage(message, undefined);
 }
 
 async function initRun(wasmUrl?: string) {

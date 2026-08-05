@@ -133,6 +133,11 @@ export class Runner {
 
 export type RunFunction = typeof Runner.prototype.run;
 
+/** The shape of the promise-based run functions exported by the entry points. */
+export type AsyncRunFunction = (
+  ...args: Parameters<RunFunction>
+) => Promise<ReturnType<RunFunction>>;
+
 export async function init(
   extraParams: ClingoParams = {}
 ): Promise<RunFunction> {
