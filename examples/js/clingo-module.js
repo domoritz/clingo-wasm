@@ -83,6 +83,7 @@ Clingo = {
     return function(text) {
       if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
       output += text + "\n";
+      updateOutput(); // show models as they are found
     };
   })(),
   printErr: function(text) {

@@ -1,4 +1,4 @@
-import { ClingoResult, run } from "../src/index.node";
+import { ClingoResult, Witness, run, stream } from "../src/index.node";
 import { ClingoError } from "../src/run";
 
 // uncomment to test compiled file
@@ -90,6 +90,40 @@ describe("run", () => {
       ["-t 4"]
     )) as ClingoResult;
     expect(Result).toBe("UNSATISFIABLE");
+  });
+
+  it("should report models to the onModel callback", async () => {
+    const streamed: Witness[] = [];
+    const { Call } = (await run("{a; b; c}.", 0, [], (model) =>
+      streamed.push(model)
+    )) as ClingoResult;
+    expect(streamed).toHaveLength(8);
+    expect(streamed).toEqual(Call[0].Witnesses);
+  });
+
+  it("should stream models with costs", async () => {
+    const streamed: Witness[] = [];
+    const result = (await run(
+      "{a; b}. #minimize {1:a}.",
+      0,
+      ["--opt-mode=optN"],
+      (model) => streamed.push(model)
+    )) as ClingoResult;
+    expect(result.Result).toBe("OPTIMUM FOUND");
+    expect(streamed.length).toBeGreaterThan(0);
+    expect(streamed[streamed.length - 1].Costs).toEqual([0]);
+  });
+
+  it("should support async iteration over models", async () => {
+    const streamed: Witness[] = [];
+    const generator = stream("{a; b; c}.", 0);
+    let next = await generator.next();
+    while (!next.done) {
+      streamed.push(next.value);
+      next = await generator.next();
+    }
+    expect(streamed).toHaveLength(8);
+    expect((next.value as ClingoResult).Result).toBe("SATISFIABLE");
   });
 
   it("should keep working after an error", async () => {

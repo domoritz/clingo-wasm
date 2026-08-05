@@ -1,5 +1,6 @@
 import type { RunFunction } from "./run";
 import { init } from "./run";
+import type { Witness } from "./witnesses";
 
 const clingoWasm = require("./clingo.wasm");
 const clingoMtWasm = require("./clingo-mt.wasm");
@@ -7,11 +8,21 @@ const clingoMtWasm = require("./clingo-mt.wasm");
 // from a real URL (this worker itself is an inline blob without one).
 const clingoMtJs = require("./clingo-mt.js?url");
 
+export type RunArgs = [program: string, models?: number, options?: string[]];
+
 export type Messages =
   | { type: "init"; wasmUrl?: string }
-  | { type: "run"; args: Parameters<RunFunction> };
+  | { type: "run"; args: RunArgs; stream?: boolean };
+
+export type Replies =
+  | { type: "model"; model: Witness }
+  | { type: "result"; result: ReturnType<RunFunction> | null };
 
 let run: RunFunction;
+
+function reply(message: Replies) {
+  postMessage(message, undefined as any);
+}
 
 async function initRun(wasmUrl?: string) {
   run = await init({
@@ -42,11 +53,15 @@ addEventListener("message", async (event) => {
     if (!run) {
       await initRun();
     }
-    const results = run(...message.args);
-    postMessage(results, undefined);
+    const [program, models, options] = message.args;
+    const onModel = message.stream
+      ? (model: Witness) => reply({ type: "model", model })
+      : undefined;
+    const result = run(program, models, options, onModel);
+    reply({ type: "result", result });
   } else if (message.type === "init") {
     await initRun(message.wasmUrl);
-    postMessage(null, undefined);
+    reply({ type: "result", result: null });
   }
 });
 

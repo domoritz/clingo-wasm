@@ -3,19 +3,20 @@
 import { Module } from "./clingo.js";
 import { Module as ModuleMt } from "./clingo-mt.js";
 import { supportsThreads } from "./threads";
+import { Witness, WitnessParser } from "./witnesses";
 
 export { supportsThreads };
+export type { Witness };
+
+/** Called with each model as clingo finds it, while solving is running. */
+export type OnModel = (model: Witness) => void;
 
 export interface ClingoResult {
   Solver?: string;
   Calls: number;
 
   Call: {
-    Witnesses: {
-      Value: string[];
-      Costs?: number[];
-      Consequences?: any;
-    }[];
+    Witnesses: Witness[];
   }[];
 
   Models: {
@@ -58,6 +59,7 @@ export type ClingoParams = Partial<EmscriptenModule> & {
 export class Runner {
   private results: string[] = [];
   private errors: string[] = [];
+  private parser?: WitnessParser;
   private clingo!: ClingoModule;
 
   constructor(private extraParams: ClingoParams = {}) {}
@@ -69,7 +71,10 @@ export class Runner {
     if (!this.clingo) {
       const { singleThreaded, ...rest } = this.extraParams;
       const params: ClingoParams = {
-        print: (line) => this.results.push(line),
+        print: (line) => {
+          this.results.push(line);
+          this.parser?.feed(line);
+        },
         printErr: (line) => this.errors.push(line),
         ...rest,
       };
@@ -89,9 +94,15 @@ export class Runner {
   // instead of an exception propagating to JavaScript.
   private static ERROR_STATUS = new Set([33, 65, 128]);
 
-  run(program: string, models: number = 1, options: string[] = []) {
+  run(
+    program: string,
+    models: number = 1,
+    options: string[] = [],
+    onModel?: OnModel
+  ) {
     this.results = [];
     this.errors = [];
+    this.parser = onModel && new WitnessParser(onModel);
 
     try {
       const status = this.clingo.ccall(

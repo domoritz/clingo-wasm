@@ -61,9 +61,27 @@ The Clingo worker can also be terminated and restarted with the following API. T
 </script>
 ```
 
+### Streaming Models
+
+To receive models as Clingo finds them instead of all at once at the end, pass a callback to `run`:
+
+```js
+await clingo.run("{a; b; c}.", 0, [], (model) => console.log(model.Value));
+```
+
+or use the `stream` async generator:
+
+```js
+for await (const model of clingo.stream("{a; b; c}.", 0)) {
+  console.log(model.Value);
+}
+```
+
+In the browser, models arrive while solving runs in the worker. In Node, solving blocks, so the callback fires during the run but the generator yields only once solving finishes.
+
 ### Parallel Solving
 
-The package ships two builds of Clingo: the default single-threaded one and one with thread support (`dist/clingo-mt.wasm`). The right build is picked automatically, and when threads are available you can use Clingo's parallel solving options:
+The package ships a second build of Clingo with thread support and picks it automatically when the environment allows. Where threads are available, Clingo's parallel solving options work:
 
 ```js
 if (clingo.supportsThreads()) {
@@ -71,12 +89,7 @@ if (clingo.supportsThreads()) {
 }
 ```
 
-Threads require `SharedArrayBuffer`:
-
-- In Node, this is always available (the thread pool needs `navigator.hardwareConcurrency`, so Node 21 or later).
-- In browsers, the page must be [cross-origin isolated](https://web.dev/articles/coop-coep): serve it with the `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp` headers. Pages without those headers automatically fall back to the single-threaded build.
-
-Pass at most `navigator.hardwareConcurrency` threads to `-t`; the preallocated worker pool has that size. When you pass a custom wasm URL to `clingo.init`, the single-threaded build is used since a single URL can only point at one of the two wasm files.
+Threads need `SharedArrayBuffer`: in Node it is always available (Node 21 or later), in browsers only on [cross-origin isolated](https://web.dev/articles/coop-coep) pages served with the COOP/COEP headers. Everywhere else the single-threaded build is used and `-t` reports an error. Use at most `navigator.hardwareConcurrency` threads, and note that passing a custom wasm URL to `init` selects the single-threaded build.
 
 ## Developers
 
