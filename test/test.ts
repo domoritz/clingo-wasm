@@ -1,5 +1,6 @@
 import { ClingoResult, Witness, run, stream } from "../src/index.node";
 import { ClingoError } from "../src/run";
+import { WitnessParser } from "../src/witnesses";
 
 // uncomment to test compiled file
 // import run from "../dist/clingo.node";
@@ -126,11 +127,73 @@ describe("run", () => {
     expect((next.value as ClingoResult).Result).toBe("SATISFIABLE");
   });
 
+  it("should stream models with adversarial atom contents", async () => {
+    // strings with quotes, braces, backslashes, unicode, and text that looks
+    // like the JSON structure the parser searches for
+    const program =
+      'a("{"). b("\\""). c("[Witnesses]"). d("\\\\"). e("日本語 }],"). ' +
+      'f("\\"Witnesses\\": [").';
+    const streamed: Witness[] = [];
+    const { Call } = (await run(program, 0, [], (model) =>
+      streamed.push(model)
+    )) as ClingoResult;
+    expect(streamed).toHaveLength(1);
+    expect(streamed).toEqual(Call[0].Witnesses);
+    expect(streamed[0].Value).toHaveLength(6);
+  });
+
   it("should keep working after an error", async () => {
     const error = (await run("this is invalid")) as ClingoError;
     expect(error.Result).toBe("ERROR");
 
     const { Result } = (await run("a.")) as ClingoResult;
     expect(Result).toBe("SATISFIABLE");
+  });
+});
+
+describe("WitnessParser", () => {
+  const document = JSON.stringify(
+    {
+      Solver: "clingo version 5.8.1",
+      Call: [
+        {
+          Witnesses: [
+            { Time: 0.1, Value: ['tricky("{[\\"Witnesses\\": [")', "a"] },
+            {
+              Time: 0.2,
+              Value: [],
+              Costs: [0],
+              Consequences: { True: 3, Open: 0 },
+            },
+          ],
+        },
+      ],
+      Result: "SATISFIABLE",
+    },
+    null,
+    2
+  );
+  const expected = [
+    { Time: 0.1, Value: ['tricky("{[\\"Witnesses\\": [")', "a"] },
+    { Time: 0.2, Value: [], Costs: [0], Consequences: { True: 3, Open: 0 } },
+  ];
+
+  it("should extract witnesses from pretty-printed output", () => {
+    const witnesses: Witness[] = [];
+    const parser = new WitnessParser((witness) => witnesses.push(witness));
+    for (const line of document.split("\n")) {
+      parser.feed(line);
+    }
+    expect(witnesses).toEqual(expected);
+  });
+
+  it("should not depend on chunking or formatting", () => {
+    const witnesses: Witness[] = [];
+    const parser = new WitnessParser((witness) => witnesses.push(witness));
+    // compact document fed one character at a time
+    for (const char of JSON.stringify(JSON.parse(document))) {
+      parser.feed(char);
+    }
+    expect(witnesses).toEqual(expected);
   });
 });

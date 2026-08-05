@@ -73,7 +73,13 @@ export class Runner {
       const params: ClingoParams = {
         print: (line) => {
           this.results.push(line);
-          this.parser?.feed(line);
+          try {
+            this.parser?.feed(line);
+          } catch (e) {
+            // a parser problem must only degrade streaming, never the run
+            this.parser = undefined;
+            console.warn("stopped streaming models:", e);
+          }
         },
         printErr: (line) => this.errors.push(line),
         ...rest,
