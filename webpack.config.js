@@ -1,10 +1,22 @@
 const path = require("path");
+const webpack = require("webpack");
+
+// The emscripten-generated clingo.js requires node builtins with the "node:"
+// scheme (e.g. require("node:fs")), which bypasses the browser field mappings
+// in package.json. Strip the prefix so those mappings apply in web builds.
+const nodeSchemePlugin = new webpack.NormalModuleReplacementPlugin(
+  /^node:/,
+  (resource) => {
+    resource.request = resource.request.replace(/^node:/, "");
+  }
+);
 
 module.exports = [
   {
     mode: "production",
     target: "web",
     entry: "./src/index.web.ts",
+    plugins: [nodeSchemePlugin],
     module: {
       rules: [
         {
