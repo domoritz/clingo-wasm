@@ -80,4 +80,12 @@ describe("run", () => {
     const { Result } = (await run("foo")) as ClingoError;
     expect(Result).toBe("ERROR");
   });
+
+  it("should keep working after an error", async () => {
+    const error = (await run("this is invalid")) as ClingoError;
+    expect(error.Result).toBe("ERROR");
+
+    const { Result } = (await run("a.")) as ClingoResult;
+    expect(Result).toBe("SATISFIABLE");
+  });
 });

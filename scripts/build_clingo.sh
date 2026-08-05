@@ -21,7 +21,9 @@ lua=lua-${lua_version}
 wget https://www.lua.org/ftp/$lua.tar.gz -O lua.tar.gz
 tar -xf lua.tar.gz
 pushd $lua
-emmake make generic local CC='emcc'
+# Build with native WebAssembly exceptions so that setjmp/longjmp in Lua uses
+# the same (wasm-based) mechanism as the C++ exceptions in Clingo.
+emmake make generic local CC='emcc -fwasm-exceptions'
 popd
 
 # Fetch and compile Clingo.
@@ -47,7 +49,7 @@ emcmake cmake \
         -DCLASP_BUILD_WITH_THREADS=Off \
         -DCMAKE_VERBOSE_MAKEFILE=On \
         -DCMAKE_BUILD_TYPE=release \
-        -DCMAKE_CXX_FLAGS="-s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1 -s STACK_SIZE=1mb" \
+        -DCMAKE_CXX_FLAGS="-fwasm-exceptions -s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1 -s STACK_SIZE=1mb" \
         -DCMAKE_EXE_LINKER_FLAGS="" \
         -DCMAKE_EXE_LINKER_FLAGS_RELEASE="" \
         ../..
