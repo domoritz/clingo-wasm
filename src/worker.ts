@@ -1,5 +1,6 @@
 import { init } from "./run.js";
-import type { RunFunction, Witness } from "./run.js";
+import type { RunFunction } from "./run.js";
+import type { Witness } from "./witnesses.js";
 import type { Messages, Replies } from "./protocol.js";
 
 /**

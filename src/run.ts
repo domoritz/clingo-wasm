@@ -3,9 +3,6 @@
 import { supportsThreads } from "./threads.js";
 import { Witness, WitnessParser } from "./witnesses.js";
 
-export { supportsThreads };
-export type { Witness };
-
 /** Called with each model as clingo finds it, while solving is running. */
 export type OnModel = (model: Witness) => void;
 

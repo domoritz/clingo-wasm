@@ -5,8 +5,7 @@ import { makeStream } from "./stream.js";
 /** Platform-independent view of a worker that runs clingo. */
 export interface ClingoWorker {
   postMessage(message: Messages): void;
-  /** Subscribes to replies; returns the unsubscribe function. */
-  onReply(handler: (reply: Replies) => void): () => void;
+  onReply(handler: (reply: Replies) => void): void;
   onError(handler: (error: unknown) => void): void;
   terminate(): void | Promise<unknown>;
   /** Node only: hold or release the event loop. */
@@ -21,15 +20,30 @@ export interface ClingoWorker {
  */
 export function createClient(spawn: () => ClingoWorker) {
   let worker: ClingoWorker | undefined;
-  let resolveActive: ((result: ClingoError) => void) | undefined;
+  /** The one outstanding request, if any (requests are serialized). */
+  let active:
+    | { resolve: (result: ReturnType<RunFunction>) => void; onModel?: OnModel }
+    | undefined;
   let queue: Promise<unknown> = Promise.resolve();
+
+  function fail(error: unknown) {
+    active?.resolve({ Result: "ERROR", Error: String(error) } as ClingoError);
+    active = undefined;
+  }
 
   function getWorker(): ClingoWorker {
     if (!worker) {
       worker = spawn();
+      worker.onReply((reply) => {
+        if (reply.type === "model") {
+          active?.onModel?.(reply.model);
+        } else {
+          active?.resolve(reply.result!);
+          active = undefined;
+        }
+      });
       worker.onError((error) => {
-        resolveActive?.({ Result: "ERROR", Error: String(error) });
-        resolveActive = undefined;
+        fail(error);
         worker = undefined;
       });
     }
@@ -45,23 +59,17 @@ export function createClient(spawn: () => ClingoWorker) {
     // keep the process alive while solving, but not while idle
     w.ref?.();
     return new Promise<ReturnType<RunFunction>>((resolve) => {
-      resolveActive = resolve;
-      const unsubscribe = w.onReply((reply) => {
-        if (reply.type === "model") {
-          onModel?.(reply.model);
-        } else {
-          unsubscribe();
-          resolveActive = undefined;
-          resolve(reply.result!);
-        }
-      });
+      active = { resolve, onModel };
       w.postMessage(message);
     }).finally(() => worker?.unref?.());
   }
 
   /** Serializes requests so only one is outstanding at a time. */
-  function enqueue<T>(task: () => Promise<T>): Promise<T> {
-    const result = queue.then(task);
+  function enqueue(
+    message: Messages,
+    onModel?: OnModel
+  ): Promise<ReturnType<RunFunction>> {
+    const result = queue.then(() => request(message, onModel));
     queue = result.catch(() => {});
     return result;
   }
@@ -70,17 +78,18 @@ export function createClient(spawn: () => ClingoWorker) {
     ...args: Parameters<RunFunction>
   ): Promise<ReturnType<RunFunction>> {
     const [program, models, options, onModel] = args;
-    return enqueue(() =>
-      request(
-        { type: "run", args: [program, models, options], stream: !!onModel },
-        onModel
-      )
+    return enqueue(
+      { type: "run", args: [program, models, options], stream: !!onModel },
+      onModel
     );
   }
 
   /** Initializes clingo up front, optionally with a custom wasm url. */
   async function init(wasmUrl?: string): Promise<void> {
-    await enqueue(() => request({ type: "init", wasmUrl }));
+    const result = await enqueue({ type: "init", wasmUrl });
+    if (result?.Result === "ERROR") {
+      throw new Error(result.Error);
+    }
   }
 
   /**
@@ -91,8 +100,7 @@ export function createClient(spawn: () => ClingoWorker) {
     if (worker) {
       const terminated = worker.terminate();
       worker = undefined;
-      resolveActive?.({ Result: "ERROR", Error: "Aborted by restart()." });
-      resolveActive = undefined;
+      fail("Aborted by restart().");
       await terminated;
     }
     if (wasmUrl !== undefined) {

@@ -1,6 +1,9 @@
-export type { ClingoResult, ClingoError, Witness, OnModel } from "./run.js";
-export { Runner, supportsThreads } from "./run.js";
+export type { ClingoResult, ClingoError, OnModel } from "./run.js";
+export type { Witness } from "./witnesses.js";
+export { Runner } from "./run.js";
+export { supportsThreads } from "./threads.js";
 
+import { supportsThreads } from "./threads.js";
 import { createClient } from "./client.js";
 
 function spawnWorker(): Worker {
@@ -30,20 +33,14 @@ function spawnWorker(): Worker {
   return new Worker(URL.createObjectURL(blob), { type: "module" });
 }
 
-const client = createClient(() => {
+export const { run, init, restart, stream } = createClient(() => {
   const worker = spawnWorker();
   return {
     postMessage: (message) => worker.postMessage(message),
-    onReply: (handler) => {
-      const listener = (event: MessageEvent) => handler(event.data);
-      worker.addEventListener("message", listener);
-      return () => worker.removeEventListener("message", listener);
-    },
+    onReply: (handler) => (worker.onmessage = (event) => handler(event.data)),
     onError: (handler) => worker.addEventListener("error", handler),
     terminate: () => worker.terminate(),
   };
 });
 
-export const { run, init, restart, stream } = client;
-
-export default run;
+export default { run, init, restart, stream, supportsThreads };

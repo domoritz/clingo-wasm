@@ -1,8 +1,8 @@
 import { existsSync } from "fs";
 import { describe, it, expect } from "vitest";
 
-import type { ClingoResult, ClingoError, Witness } from "../src/run.js";
-import { WitnessParser } from "../src/witnesses.js";
+import type { ClingoResult, ClingoError } from "../src/run.js";
+import { WitnessParser, type Witness } from "../src/witnesses.js";
 
 // The worker-based API spawns its worker from the compiled package, so the
 // tests run against it. CI builds before testing; locally, run
@@ -12,6 +12,17 @@ if (!existsSync(entry)) {
   throw new Error("dist/index.node.js is missing; run `npm run build` first.");
 }
 const { run, stream, restart } = await import(entry.href);
+
+describe("default export", () => {
+  it("should expose the documented API", async () => {
+    const clingo = (await import(entry.href)).default;
+    expect((await clingo.run("a.")).Result).toBe("SATISFIABLE");
+    expect(typeof clingo.supportsThreads()).toBe("boolean");
+    expect(typeof clingo.stream).toBe("function");
+    expect(typeof clingo.restart).toBe("function");
+    expect(typeof clingo.init).toBe("function");
+  });
+});
 
 describe("run", () => {
   it("should work", async () => {

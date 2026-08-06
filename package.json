@@ -5,10 +5,8 @@
   "repository": "https://github.com/domoritz/clingo-wasm",
   "author": "Dominik Moritz <domoritz@gmail.com>",
   "license": "Apache-2.0",
-  "private": false,
   "type": "module",
   "main": "dist/index.node.js",
-  "types": "dist/index.node.d.ts",
   "jsdelivr": "dist/index.web.js",
   "unpkg": "dist/index.web.js",
   "exports": {
@@ -34,7 +32,7 @@
     "watch": "tsc --watch",
     "test": "vitest run",
     "copy": "cp src/clingo*.js src/clingo*.wasm examples/js",
-    "clean": "rimraf clingo-* lua-* *.tar.gz src/clingo.wasm src/clingo.js dist",
+    "clean": "rimraf clingo-* lua-* *.tar.gz src/clingo.js src/clingo-mt.js 'src/clingo*.wasm' dist",
     "deploy": "npm run copy && gh-pages -d examples",
     "start:examples": "npm run copy && serve examples",
     "start:dev": "serve ."
