@@ -6,8 +6,7 @@
     "target": "es2022",
     "lib": ["es2022", "dom"],
     "types": ["node"],
-    "declaration": true,
-    "declarationMap": true
+    "declaration": true
   },
   "include": ["src/**/*.ts"]
 }

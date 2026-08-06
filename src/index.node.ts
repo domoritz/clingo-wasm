@@ -2,7 +2,6 @@ import { Worker } from "worker_threads";
 
 export type { ClingoResult, ClingoError, OnModel } from "./run.js";
 export type { Witness } from "./witnesses.js";
-export { Runner } from "./run.js";
 export { supportsThreads } from "./threads.js";
 
 import { supportsThreads } from "./threads.js";

@@ -25,6 +25,9 @@
   "engines": {
     "node": ">=22"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build:wasm": "scripts/build.sh",
     "build": "rimraf dist && tsc && cp src/clingo*.js src/clingo*.wasm src/clingo*.d.ts dist",
@@ -35,9 +38,6 @@
     "clean": "rimraf clingo-* lua-* *.tar.gz src/clingo.js src/clingo-mt.js src/clingo.wasm src/clingo-mt.wasm dist",
     "deploy": "npm run copy && gh-pages -d examples",
     "start:examples": "npm run copy && serve examples"
-  },
-  "dependencies": {
-    "@types/emscripten": "^1.41.5"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",

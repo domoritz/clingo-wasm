@@ -1,5 +1,4 @@
-/// <reference types="emscripten" />
-
+import type { ClingoModule, ModuleParams } from "./clingo.js";
 import { supportsThreads } from "./threads.js";
 import { Witness, WitnessParser } from "./witnesses.js";
 
@@ -39,11 +38,7 @@ export interface ClingoError {
   Error: string;
 }
 
-interface ClingoModule extends EmscriptenModule {
-  ccall: typeof ccall;
-}
-
-export type ClingoParams = Partial<EmscriptenModule> & {
+export type ClingoParams = ModuleParams & {
   /** Force the single-threaded build even when threads are supported. */
   singleThreaded?: boolean;
 };
