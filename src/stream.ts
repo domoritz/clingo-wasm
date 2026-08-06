@@ -3,9 +3,10 @@ import type { Witness } from "./witnesses";
 
 /**
  * Wraps a run function into an async generator that yields each model as it
- * is found and returns the final result. In Node, solving blocks the event
- * loop, so all models are yielded right after solving finishes; in the
- * browser, solving runs in a worker and models arrive while it solves.
+ * is found and returns the final result. Models arrive while solving when the
+ * run function solves in a worker (the browser bundle and the compiled Node
+ * package); with in-process solving they are all yielded right after solving
+ * finishes.
  */
 export function makeStream(run: AsyncRunFunction) {
   return async function* stream(

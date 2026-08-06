@@ -2,8 +2,9 @@ export type { ClingoResult, ClingoError, Witness, OnModel } from "./run";
 export { supportsThreads } from "./threads";
 
 import type { RunFunction } from "./run";
+import type { Messages, Replies } from "./protocol";
 import { makeStream } from "./stream";
-import Worker, { Messages, Replies } from "./run.worker";
+import Worker from "./run.worker";
 
 let worker = new Worker();
 

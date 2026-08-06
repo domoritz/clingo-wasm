@@ -24,6 +24,8 @@ const clingo = require("clingo-wasm");
 clingo.run("a. b:- a.").then(console.log);
 ```
 
+Solving runs in a worker thread, so a long-running solve can be aborted with `clingo.restart()`.
+
 ### In the Browser
 
 Load Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-wasm).
@@ -77,7 +79,7 @@ for await (const model of clingo.stream("{a; b; c}.", 0)) {
 }
 ```
 
-In the browser, models arrive while solving runs in the worker. In Node, solving blocks, so the callback fires during the run but the generator yields only once solving finishes.
+Models arrive while solving, which runs in a worker in both the browser and Node.
 
 ### Parallel Solving
 

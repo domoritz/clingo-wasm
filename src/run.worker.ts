@@ -1,22 +1,13 @@
 import type { RunFunction } from "./run";
 import { init } from "./run";
 import type { Witness } from "./witnesses";
+import type { Messages, Replies } from "./protocol";
 
 const clingoWasm = require("./clingo.wasm");
 const clingoMtWasm = require("./clingo-mt.wasm");
 // URL of the standalone threaded module, so its pthread workers can be spawned
 // from a real URL (this worker itself is an inline blob without one).
 const clingoMtJs = require("./clingo-mt.js?url");
-
-export type RunArgs = [program: string, models?: number, options?: string[]];
-
-export type Messages =
-  | { type: "init"; wasmUrl?: string }
-  | { type: "run"; args: RunArgs; stream?: boolean };
-
-export type Replies =
-  | { type: "model"; model: Witness }
-  | { type: "result"; result: ReturnType<RunFunction> | null };
 
 let run: RunFunction;
 
