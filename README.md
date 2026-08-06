@@ -14,7 +14,7 @@ This repo combines work from two previous repos: <https://github.com/Aluriak/web
 
 ## Installation and Usage
 
-The package is an ES module and needs Node 22 or a modern browser. Solving runs in a worker, so all commands are asynchronous, and a long-running solve can be aborted with `clingo.restart()`.
+The package is an ES module. Solving runs in a worker, so all commands are asynchronous, and a long-running solve can be aborted with `clingo.restart()`.
 
 ### Node
 
