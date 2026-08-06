@@ -1,12 +1,9 @@
-import type { AsyncRunFunction, ClingoError, ClingoResult } from "./run";
-import type { Witness } from "./witnesses";
+import type { AsyncRunFunction, ClingoError, ClingoResult } from "./run.js";
+import type { Witness } from "./witnesses.js";
 
 /**
  * Wraps a run function into an async generator that yields each model as it
- * is found and returns the final result. Models arrive while solving when the
- * run function solves in a worker (the browser bundle and the compiled Node
- * package); with in-process solving they are all yielded right after solving
- * finishes.
+ * is found and returns the final result.
  */
 export function makeStream(run: AsyncRunFunction) {
   return async function* stream(

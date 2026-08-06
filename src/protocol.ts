@@ -1,12 +1,14 @@
-import type { RunFunction } from "./run";
-import type { Witness } from "./witnesses";
+import type { RunFunction } from "./run.js";
+import type { Witness } from "./witnesses.js";
 
 /** Messages sent to a clingo worker (web worker or Node worker thread). */
-export type RunArgs = [program: string, models?: number, options?: string[]];
-
 export type Messages =
   | { type: "init"; wasmUrl?: string }
-  | { type: "run"; args: RunArgs; stream?: boolean };
+  | {
+      type: "run";
+      args: [program: string, models?: number, options?: string[]];
+      stream?: boolean;
+    };
 
 /** Replies sent back from a clingo worker. */
 export type Replies =

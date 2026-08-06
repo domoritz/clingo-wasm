@@ -1,18 +1,28 @@
-import * as fs from "fs";
-import * as path from "path";
+import { existsSync } from "fs";
+import { describe, it, expect } from "vitest";
 
-import type { ClingoResult, ClingoError, Witness } from "../src/run";
-import { WitnessParser } from "../src/witnesses";
+import type { ClingoResult, ClingoError } from "../src/run.js";
+import { WitnessParser, type Witness } from "../src/witnesses.js";
 
-// The worker-based Node API spawns its worker from the compiled bundle, so
-// the tests run against it. CI builds before testing; locally, run
+// The worker-based API spawns its worker from the compiled package, so the
+// tests run against it. CI builds before testing; locally, run
 // `npm run build` first.
-const bundle = path.join(__dirname, "..", "dist", "clingo.node.js");
-if (!fs.existsSync(bundle)) {
-  throw new Error("dist/clingo.node.js is missing; run `npm run build` first.");
+const entry = new URL("../dist/index.node.js", import.meta.url);
+if (!existsSync(entry)) {
+  throw new Error("dist/index.node.js is missing; run `npm run build` first.");
 }
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { run, stream, restart } = require(bundle);
+const { run, stream, restart, init } = await import(entry.href);
+
+describe("default export", () => {
+  it("should expose the documented API", async () => {
+    const clingo = (await import(entry.href)).default;
+    expect((await clingo.run("a.")).Result).toBe("SATISFIABLE");
+    expect(typeof clingo.supportsThreads()).toBe("boolean");
+    expect(typeof clingo.stream).toBe("function");
+    expect(typeof clingo.restart).toBe("function");
+    expect(typeof clingo.init).toBe("function");
+  });
+});
 
 describe("run", () => {
   it("should work", async () => {
@@ -177,6 +187,49 @@ describe("restart", () => {
     },
     30000
   );
+
+  it(
+    "should let queued runs continue after an abort",
+    async () => {
+      const running = run("{a(1..24)}.", 0);
+      const queued = run("b.");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await restart();
+
+      expect((await running).Result).toBe("ERROR");
+      expect((await queued).Result).toBe("SATISFIABLE");
+    },
+    30000
+  );
+});
+
+describe("init", () => {
+  it("should reject for an unusable wasm url and recover", async () => {
+    await expect(init("/does/not/exist.wasm")).rejects.toThrow();
+    const { Result } = (await run("a.")) as ClingoResult;
+    expect(Result).toBe("SATISFIABLE");
+  });
+
+  it("should use the given wasm and select the single-threaded build", async () => {
+    await restart(new URL("../dist/clingo.wasm", import.meta.url).pathname);
+    expect((await run("a.")).Result).toBe("SATISFIABLE");
+    // the single-threaded build rejects parallel solving options
+    expect((await run("a.", 0, ["-t 2"])).Result).toBe("ERROR");
+    await restart(); // back to the default builds for other tests
+  });
+});
+
+describe("queueing", () => {
+  it("should serialize concurrent runs and pair results correctly", async () => {
+    const [a, b, bad] = await Promise.all([
+      run("a.", 0),
+      run("b.", 0),
+      run("this is invalid"),
+    ]);
+    expect((a as ClingoResult).Call[0].Witnesses[0].Value).toEqual(["a"]);
+    expect((b as ClingoResult).Call[0].Witnesses[0].Value).toEqual(["b"]);
+    expect(bad.Result).toBe("ERROR");
+  });
 });
 
 describe("WitnessParser", () => {

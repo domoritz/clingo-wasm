@@ -1,1 +1,1 @@
-export { default } from "./clingo";
+export { default } from "./clingo.js";

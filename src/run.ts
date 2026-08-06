@@ -1,12 +1,6 @@
-/// <reference types="emscripten" />
-
-import Module from "./clingo.js";
-import ModuleMt from "./clingo-mt.js";
-import { supportsThreads } from "./threads";
-import { Witness, WitnessParser } from "./witnesses";
-
-export { supportsThreads };
-export type { Witness };
+import type { ClingoModule, ModuleParams } from "./clingo.js";
+import { supportsThreads } from "./threads.js";
+import { Witness, WitnessParser } from "./witnesses.js";
 
 /** Called with each model as clingo finds it, while solving is running. */
 export type OnModel = (model: Witness) => void;
@@ -44,14 +38,7 @@ export interface ClingoError {
   Error: string;
 }
 
-interface ClingoModule extends EmscriptenModule {
-  ccall: typeof ccall;
-}
-
-export type ClingoParams = Partial<EmscriptenModule> & {
-  /** URL (or Blob) of the standalone clingo-mt.js, used by the threaded build
-   * to spawn its pthread web workers when the module itself was bundled. */
-  mainScriptUrlOrBlob?: string | Blob;
+export type ClingoParams = ModuleParams & {
   /** Force the single-threaded build even when threads are supported. */
   singleThreaded?: boolean;
 };
@@ -83,8 +70,11 @@ export class Runner {
         ...rest,
       };
 
-      const factory =
-        supportsThreads() && !singleThreaded ? ModuleMt : Module;
+      // load lazily so that only the module for this environment is fetched
+      const { default: factory } =
+        supportsThreads() && !singleThreaded
+          ? await import("./clingo-mt.js")
+          : await import("./clingo.js");
       this.clingo = await factory(params);
     }
   }
@@ -127,7 +117,7 @@ export class Runner {
     } catch (e) {
       return {
         Result: "ERROR",
-        Error: this.errors.join("\n"),
+        Error: this.errors.join("\n") || String(e),
       } as ClingoError;
     }
   }
@@ -140,9 +130,7 @@ export type AsyncRunFunction = (
   ...args: Parameters<RunFunction>
 ) => Promise<ReturnType<RunFunction>>;
 
-export async function init(
-  extraParams: ClingoParams = {}
-): Promise<RunFunction> {
+export async function init(extraParams: ClingoParams = {}): Promise<RunFunction> {
   const runner = new Runner(extraParams);
 
   await runner.init();

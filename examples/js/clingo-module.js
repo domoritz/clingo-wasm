@@ -1,3 +1,5 @@
+import Module from "./clingo.js";
+
 var Clingo = {};
 var outputElement = document.getElementById('output');
 var runButton = document.getElementById('run');
@@ -31,7 +33,7 @@ function load_example(path) {
 }
 
 function solve() {
-  options = "";
+  let options = "";
   if (document.getElementById("stats").checked) { options += " --stats"; }
   if (document.getElementById("project").checked) { options += " --project"; }
   var index = document.getElementById("mode").selectedIndex;
@@ -146,3 +148,6 @@ if (QueryString.program !== undefined) {
     alert('Failed to decode shared program.');
   }
 }
+
+// expose the handlers used by inline event attributes in index.html
+Object.assign(window, { example, solve, shareProgram });

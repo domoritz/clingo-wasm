@@ -20,17 +20,14 @@ fi
 # needs SharedArrayBuffer, which browsers only expose on cross-origin isolated
 # pages, so it is shipped alongside the default build and picked at runtime.
 #
-# Both are compiled with native WebAssembly exceptions so that C++ exceptions
-# in Clingo and setjmp/longjmp in Lua use the wasm exception handling proposal.
-st_flags="-fwasm-exceptions"
-# Emscripten's default INCOMING_MODULE_JS_API (src/settings.js), which setting
-# the option would otherwise replace.
-default_module_api="ENVIRONMENT,arguments,canvas,dynamicLibraries,elementPointerLock,instantiateWasm,locateFile,monitorRunDependencies,noExitRuntime,noInitialRun,onAbort,onExit,onRuntimeInitialized,postRun,preInit,preRun,print,printErr,setStatus,statusMessage,stderr,stdin,stdout,thisProgram,wasm,websocket"
+# Both are ES modules that resolve their wasm file (and, for the threaded
+# build, their pthread workers) relative to import.meta.url, and are compiled
+# with native WebAssembly exceptions so that C++ exceptions in Clingo and
+# setjmp/longjmp in Lua use the wasm exception handling proposal.
+st_flags="-fwasm-exceptions -sEXPORT_ES6=1"
 # The pthread pool is sized from navigator.hardwareConcurrency (available in
-# browsers and in Node >= 21; the JS wrapper only selects this build when it
-# exists). mainScriptUrlOrBlob is added to the incoming module API so bundlers
-# can tell the pthread workers where to load the module from.
-mt_flags="-pthread -fwasm-exceptions -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency -sINCOMING_MODULE_JS_API=$default_module_api,mainScriptUrlOrBlob"
+# browsers and in Node; the JS wrapper only selects this build when it exists).
+mt_flags="-pthread -fwasm-exceptions -sEXPORT_ES6=1 -sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency"
 
 # Fetch and compile Lua, once per variant.
 
@@ -90,8 +87,14 @@ build_clingo web "$lua" "$st_flags" Off
 build_clingo web-mt "$lua-mt" "$mt_flags" On
 
 # The threaded variant is shipped as clingo-mt.js/clingo-mt.wasm next to the
-# default build, so rename the wasm file it loads.
-sed -i.bak 's/clingo\.wasm/clingo-mt.wasm/g' build/web-mt/bin/clingo.js
+# default build, so rename the files it references (its wasm file and itself,
+# for spawning its pthread workers).
+sed -i.bak -e 's/clingo\.wasm/clingo-mt.wasm/g' -e 's/clingo\.js/clingo-mt.js/g' \
+    build/web-mt/bin/clingo.js
+# Guarded node builtin imports never run in browsers; keep bundlers from
+# trying to resolve them.
+sed -i.bak 's|import("node:|import(/* webpackIgnore: true */ /* @vite-ignore */ "node:|g' \
+    build/web/bin/clingo.js build/web-mt/bin/clingo.js
 popd
 
 # Copy the results to root.
