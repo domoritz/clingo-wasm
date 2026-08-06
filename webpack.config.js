@@ -37,14 +37,6 @@ module.exports = [
           },
         },
         {
-          test: /clingo(-mt)?\.js$/,
-          resourceQuery: { not: [/url/] },
-          loader: "exports-loader",
-          options: {
-            exports: "Module",
-          },
-        },
-        {
           test: /\.wasm$/,
           type: "asset/resource",
           generator: {

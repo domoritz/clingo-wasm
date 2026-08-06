@@ -1,1 +1,1 @@
-export { Module } from "./clingo";
+export { default } from "./clingo";

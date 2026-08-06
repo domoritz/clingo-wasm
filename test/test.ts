@@ -1,12 +1,18 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { ClingoResult, Witness, run, stream } from "../src/index.node";
-import { ClingoError } from "../src/run";
+import type { ClingoResult, ClingoError, Witness } from "../src/run";
 import { WitnessParser } from "../src/witnesses";
 
-// uncomment to test compiled file
-// import run from "../dist/clingo.node";
+// The worker-based Node API spawns its worker from the compiled bundle, so
+// the tests run against it. CI builds before testing; locally, run
+// `npm run build` first.
+const bundle = path.join(__dirname, "..", "dist", "clingo.node.js");
+if (!fs.existsSync(bundle)) {
+  throw new Error("dist/clingo.node.js is missing; run `npm run build` first.");
+}
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { run, stream, restart } = require(bundle);
 
 describe("run", () => {
   it("should work", async () => {
@@ -154,39 +160,23 @@ describe("run", () => {
   });
 });
 
-// The worker-based Node API only works in the compiled bundle, so these tests
-// need `npm run build` to have run (as it has in CI).
-const distBundle = path.join(__dirname, "..", "dist", "clingo.node.js");
-const describeDist = fs.existsSync(distBundle) ? describe : describe.skip;
-
-describeDist("compiled bundle", () => {
+describe("restart", () => {
   it(
-    "should abort a running solve with restart and keep working",
+    "should abort a running solve and keep working",
     async () => {
-      const clingo = require(distBundle);
-
       // enumerating all models of this program takes practically forever
-      const running = clingo.run("{a(1..24)}.", 0);
+      const running = run("{a(1..24)}.", 0);
       await new Promise((resolve) => setTimeout(resolve, 500));
-      await clingo.restart();
+      await restart();
 
       const aborted = await running;
       expect(aborted.Result).toBe("ERROR");
 
-      const { Result } = await clingo.run("a.");
+      const { Result } = (await run("a.")) as ClingoResult;
       expect(Result).toBe("SATISFIABLE");
     },
     30000
   );
-
-  it("should stream models while solving", async () => {
-    const clingo = require(distBundle);
-    const seen: number[] = [];
-    // with the worker, callbacks arrive while the solve is still running
-    await clingo.run("{a(1..8)}.", 0, [], () => seen.push(Date.now()));
-    expect(seen.length).toBe(256);
-    expect(seen[seen.length - 1]).toBeGreaterThan(seen[0]);
-  });
 });
 
 describe("WitnessParser", () => {

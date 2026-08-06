@@ -42,15 +42,9 @@ if (!isMainThread && workerData === WORKER_SENTINEL && parentPort) {
   });
 }
 
-// The worker is spawned from this file itself, which only works for the
-// compiled bundle. When running from TypeScript sources (e.g. in jest), fall
-// back to solving in-process, without restart() support.
-const canUseWorker = /\.[cm]?js$/.test(__filename);
-
 let worker: Worker | undefined;
 let resolveActiveRun: ((result: ClingoError) => void) | undefined;
 let queue: Promise<unknown> = Promise.resolve();
-let inProcessRun: Promise<RunFunction> | undefined;
 
 function getWorker(): Worker {
   if (!worker) {
@@ -95,12 +89,6 @@ function runInWorker(
 export async function run(
   ...args: Parameters<RunFunction>
 ): Promise<ReturnType<RunFunction>> {
-  if (!canUseWorker) {
-    // initialize lazily so that importing the package does not load the wasm
-    // module (and, with threads, spawn the worker pool)
-    inProcessRun ??= init();
-    return (await inProcessRun)(...args);
-  }
   // solve one program at a time; queued runs start when the previous finishes
   const result = queue.then(() => runInWorker(...args));
   queue = result.catch(() => {});
@@ -119,7 +107,6 @@ export async function restart(): Promise<void> {
     resolveActiveRun = undefined;
     await terminated;
   }
-  inProcessRun = undefined;
 }
 
 /**

@@ -89,13 +89,6 @@ pushd $clingo
 build_clingo web "$lua" "$st_flags" Off
 build_clingo web-mt "$lua-mt" "$mt_flags" On
 
-# Fix export issue of clingo. (Refer to #18954/#20163 in emscripten) The
-# threaded build must not get this: it ends in the pthread bootstrap statement,
-# so the appended else-branch would be a syntax error, and its exports work
-# without the fix.
-echo "else if (typeof exports === 'object')" >> build/web/bin/clingo.js
-echo "  exports['Module'] = Module;" >> build/web/bin/clingo.js
-
 # The threaded variant is shipped as clingo-mt.js/clingo-mt.wasm next to the
 # default build, so rename the wasm file it loads.
 sed -i.bak 's/clingo\.wasm/clingo-mt.wasm/g' build/web-mt/bin/clingo.js
