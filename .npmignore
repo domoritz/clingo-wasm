@@ -1,8 +1,11 @@
 .vscode
+.github
 *.tar.gz
 /clingo-*
 /lua-*
 /src/clingo*
+/test
+/tsconfig.json
 examples/*
 node_modules
 scripts/*

@@ -36,8 +36,12 @@ export function createClient(spawn: () => ClingoWorker) {
 
   function getWorker(): ClingoWorker {
     if (!worker) {
-      worker = spawn();
-      worker.onReply((reply) => {
+      const w = (worker = spawn());
+      // ignore stray messages from a worker that restart() replaced
+      w.onReply((reply) => {
+        if (worker !== w) {
+          return;
+        }
         if (reply.type === "model") {
           active?.onModel?.(reply.model);
         } else {
@@ -45,11 +49,13 @@ export function createClient(spawn: () => ClingoWorker) {
           active = undefined;
         }
       });
-      worker.onError((error) => {
-        const errored = worker;
+      w.onError((error) => {
+        if (worker !== w) {
+          return;
+        }
         worker = undefined;
         fail(error);
-        errored?.terminate();
+        w.terminate();
       });
     }
     return worker;

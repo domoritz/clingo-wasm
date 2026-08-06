@@ -7,14 +7,17 @@ import { supportsThreads } from "./threads.js";
 import { createClient } from "./client.js";
 
 function spawnWorker(): Worker {
-  const url = new URL("./run.worker.js", import.meta.url);
-  if (url.origin === location.origin) {
-    return new Worker(url, { type: "module" });
+  if (new URL(import.meta.url).origin === location.origin) {
+    // keep this call a literal: bundlers only detect workers statically
+    return new Worker(new URL("./run.worker.js", import.meta.url), {
+      type: "module",
+    });
   }
   // Workers must be same-origin, so when the package is loaded from another
   // origin (e.g. a CDN), spawn the worker from a same-origin blob that
   // imports the real worker module. Messages arriving while the module loads
   // are buffered and replayed, since they would otherwise be dropped.
+  const url = new URL("./run.worker.js", import.meta.url);
   const trampoline = `
     const queued = [];
     self.onmessage = (event) => queued.push(event);
