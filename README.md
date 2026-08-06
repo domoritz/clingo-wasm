@@ -14,54 +14,34 @@ This repo combines work from two previous repos: <https://github.com/Aluriak/web
 
 ## Installation and Usage
 
+The package is an ES module and needs Node 22 or a modern browser. Solving runs in a worker, so all commands are asynchronous, and a long-running solve can be aborted with `clingo.restart()`.
+
 ### Node
 
 `npm install clingo-wasm` or `yarn add clingo-wasm`.
 
 ```js
-const clingo = require("clingo-wasm");
+import clingo from "clingo-wasm";
 
-clingo.run("a. b:- a.").then(console.log);
+console.log(await clingo.run("a. b :- a."));
 ```
 
-Solving runs in a worker thread, so a long-running solve can be aborted with `clingo.restart()`.
+(`const clingo = require("clingo-wasm")` works too.)
 
 ### In the Browser
 
-Load Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-wasm).
+Import Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/clingo-wasm) — the wasm files load from the CDN automatically:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION"></script>
-```
+<script type="module">
+  import clingo from "https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/dist/index.web.js";
 
-We expose an UMD bundle that runs Clingo in a separate worker thread. Therefore, all commands need to be asynchronous.
-
-```html
-<script>
-  async function main() {
-    // optionally pass URL to WASM file:
-    // await clingo.init("https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/dist/clingo.wasm")
-    console.log(await clingo.run("a. b :- a."));
-    console.log(await clingo.run("{a; b; c}.", 0));
-  }
-
-  main();
+  console.log(await clingo.run("a. b :- a."));
+  console.log(await clingo.run("{a; b; c}.", 0));
 </script>
 ```
 
-The Clingo worker can also be terminated and restarted with the following API. This API is useful when the Clingo program takes much time and the user want to interrupt it. Moreover, please re-initialize the Clingo WASM after restarting the worker.
-
-```html
-<script>
-  async function restart() {
-    await clingo.restart(
-      "https://cdn.jsdelivr.net/npm/clingo-wasm@VERSION/dist/clingo.wasm"
-    ); // re-initialize Clingo
-  }
-
-  restart();
-</script>
-```
+Bundlers pick up the package's worker and wasm files automatically as well. To host the wasm file somewhere else, pass its URL to `clingo.init`.
 
 ### Streaming Models
 
@@ -91,7 +71,7 @@ if (clingo.supportsThreads()) {
 }
 ```
 
-Threads need `SharedArrayBuffer`: in Node it is always available (Node 21 or later), in browsers only on [cross-origin isolated](https://web.dev/articles/coop-coep) pages served with the COOP/COEP headers. Everywhere else the single-threaded build is used and `-t` reports an error. Use at most `navigator.hardwareConcurrency` threads, and note that passing a custom wasm URL to `init` selects the single-threaded build.
+Threads need `SharedArrayBuffer`: in Node it is always available, in browsers only on [cross-origin isolated](https://web.dev/articles/coop-coep) pages served with the COOP/COEP headers. Everywhere else the single-threaded build is used and `-t` reports an error. Use at most `navigator.hardwareConcurrency` threads, and note that passing a custom wasm URL to `init` selects the single-threaded build.
 
 ## Developers
 

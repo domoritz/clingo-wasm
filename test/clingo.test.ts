@@ -1,18 +1,17 @@
-import * as fs from "fs";
-import * as path from "path";
+import { existsSync } from "fs";
+import { describe, it, expect } from "vitest";
 
-import type { ClingoResult, ClingoError, Witness } from "../src/run";
-import { WitnessParser } from "../src/witnesses";
+import type { ClingoResult, ClingoError, Witness } from "../src/run.js";
+import { WitnessParser } from "../src/witnesses.js";
 
-// The worker-based Node API spawns its worker from the compiled bundle, so
-// the tests run against it. CI builds before testing; locally, run
+// The worker-based API spawns its worker from the compiled package, so the
+// tests run against it. CI builds before testing; locally, run
 // `npm run build` first.
-const bundle = path.join(__dirname, "..", "dist", "clingo.node.js");
-if (!fs.existsSync(bundle)) {
-  throw new Error("dist/clingo.node.js is missing; run `npm run build` first.");
+const entry = new URL("../dist/index.node.js", import.meta.url);
+if (!existsSync(entry)) {
+  throw new Error("dist/index.node.js is missing; run `npm run build` first.");
 }
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { run, stream, restart } = require(bundle);
+const { run, stream, restart } = await import(entry.href);
 
 describe("run", () => {
   it("should work", async () => {

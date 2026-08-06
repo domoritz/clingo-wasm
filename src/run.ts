@@ -1,9 +1,7 @@
 /// <reference types="emscripten" />
 
-import Module from "./clingo.js";
-import ModuleMt from "./clingo-mt.js";
-import { supportsThreads } from "./threads";
-import { Witness, WitnessParser } from "./witnesses";
+import { supportsThreads } from "./threads.js";
+import { Witness, WitnessParser } from "./witnesses.js";
 
 export { supportsThreads };
 export type { Witness };
@@ -49,9 +47,6 @@ interface ClingoModule extends EmscriptenModule {
 }
 
 export type ClingoParams = Partial<EmscriptenModule> & {
-  /** URL (or Blob) of the standalone clingo-mt.js, used by the threaded build
-   * to spawn its pthread web workers when the module itself was bundled. */
-  mainScriptUrlOrBlob?: string | Blob;
   /** Force the single-threaded build even when threads are supported. */
   singleThreaded?: boolean;
 };
@@ -83,8 +78,11 @@ export class Runner {
         ...rest,
       };
 
-      const factory =
-        supportsThreads() && !singleThreaded ? ModuleMt : Module;
+      // load lazily so that only the module for this environment is fetched
+      const { default: factory } =
+        supportsThreads() && !singleThreaded
+          ? await import("./clingo-mt.js")
+          : await import("./clingo.js");
       this.clingo = await factory(params);
     }
   }
@@ -140,9 +138,7 @@ export type AsyncRunFunction = (
   ...args: Parameters<RunFunction>
 ) => Promise<ReturnType<RunFunction>>;
 
-export async function init(
-  extraParams: ClingoParams = {}
-): Promise<RunFunction> {
+export async function init(extraParams: ClingoParams = {}): Promise<RunFunction> {
   const runner = new Runner(extraParams);
 
   await runner.init();
