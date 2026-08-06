@@ -37,14 +37,6 @@ module.exports = [
           },
         },
         {
-          test: /clingo(-mt)?\.js$/,
-          resourceQuery: { not: [/url/] },
-          loader: "exports-loader",
-          options: {
-            exports: "Module",
-          },
-        },
-        {
           test: /\.wasm$/,
           type: "asset/resource",
           generator: {
@@ -65,6 +57,11 @@ module.exports = [
     output: {
       filename: "clingo.web.js",
       path: path.resolve(__dirname, "./dist"),
+      // An explicit publicPath keeps webpack from generating runtime code
+      // that derives it from document.currentScript, which is unavailable in
+      // module scripts and under bundlers like Vite (#287). All emitted
+      // assets carry their own explicit publicPath.
+      publicPath: "",
       library: "clingo",
       libraryTarget: "umd",
     },

@@ -1,7 +1,7 @@
 /// <reference types="emscripten" />
 
-import { Module } from "./clingo.js";
-import { Module as ModuleMt } from "./clingo-mt.js";
+import Module from "./clingo.js";
+import ModuleMt from "./clingo-mt.js";
 import { supportsThreads } from "./threads";
 import { Witness, WitnessParser } from "./witnesses";
 
@@ -65,8 +65,6 @@ export class Runner {
   constructor(private extraParams: ClingoParams = {}) {}
 
   async init() {
-    console.info("Initialize Clingo");
-
     // only initialize once
     if (!this.clingo) {
       const { singleThreaded, ...rest } = this.extraParams;
@@ -86,9 +84,7 @@ export class Runner {
       };
 
       const factory =
-        supportsThreads() && !singleThreaded
-          ? ModuleMt || require("./clingo-mt")
-          : Module || require("./clingo");
+        supportsThreads() && !singleThreaded ? ModuleMt : Module;
       this.clingo = await factory(params);
     }
   }
