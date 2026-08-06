@@ -1,7 +1,8 @@
 .vscode
 *.tar.gz
-clingo-*
+/clingo-*
+/lua-*
+/src/clingo*
 examples/*
-lua-*
 node_modules
 scripts/*

@@ -32,7 +32,7 @@
     "watch": "tsc --watch",
     "test": "vitest run",
     "copy": "cp src/clingo*.js src/clingo*.wasm examples/js",
-    "clean": "rimraf clingo-* lua-* *.tar.gz src/clingo.js src/clingo-mt.js 'src/clingo*.wasm' dist",
+    "clean": "rimraf clingo-* lua-* *.tar.gz src/clingo.js src/clingo-mt.js src/clingo.wasm src/clingo-mt.wasm dist",
     "deploy": "npm run copy && gh-pages -d examples",
     "start:examples": "npm run copy && serve examples",
     "start:dev": "serve ."

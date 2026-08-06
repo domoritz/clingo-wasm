@@ -38,7 +38,10 @@ export const { run, init, restart, stream } = createClient(() => {
   return {
     postMessage: (message) => worker.postMessage(message),
     onReply: (handler) => (worker.onmessage = (event) => handler(event.data)),
-    onError: (handler) => worker.addEventListener("error", handler),
+    onError: (handler) =>
+      worker.addEventListener("error", (event) =>
+        handler(event.message || event)
+      ),
     terminate: () => worker.terminate(),
   };
 });

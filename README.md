@@ -41,7 +41,7 @@ Import Clingo from the [JSDelivr CDN](https://www.jsdelivr.com/package/npm/cling
 </script>
 ```
 
-Bundlers pick up the package's worker and wasm files automatically as well. To host the wasm file somewhere else, pass its URL to `clingo.init`.
+Bundlers pick up the package's worker and wasm files automatically as well. To host the wasm file somewhere else, pass its URL to `clingo.init`, which throws if the wasm cannot be loaded.
 
 ### Streaming Models
 

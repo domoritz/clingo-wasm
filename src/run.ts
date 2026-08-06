@@ -122,7 +122,7 @@ export class Runner {
     } catch (e) {
       return {
         Result: "ERROR",
-        Error: this.errors.join("\n"),
+        Error: this.errors.join("\n") || String(e),
       } as ClingoError;
     }
   }

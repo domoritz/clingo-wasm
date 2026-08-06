@@ -22,7 +22,10 @@ export function createClient(spawn: () => ClingoWorker) {
   let worker: ClingoWorker | undefined;
   /** The one outstanding request, if any (requests are serialized). */
   let active:
-    | { resolve: (result: ReturnType<RunFunction>) => void; onModel?: OnModel }
+    | {
+        resolve: (result: ReturnType<RunFunction> | null) => void;
+        onModel?: OnModel;
+      }
     | undefined;
   let queue: Promise<unknown> = Promise.resolve();
 
@@ -38,13 +41,15 @@ export function createClient(spawn: () => ClingoWorker) {
         if (reply.type === "model") {
           active?.onModel?.(reply.model);
         } else {
-          active?.resolve(reply.result!);
+          active?.resolve(reply.result);
           active = undefined;
         }
       });
       worker.onError((error) => {
-        fail(error);
+        const errored = worker;
         worker = undefined;
+        fail(error);
+        errored?.terminate();
       });
     }
     return worker;
@@ -54,13 +59,18 @@ export function createClient(spawn: () => ClingoWorker) {
   function request(
     message: Messages,
     onModel?: OnModel
-  ): Promise<ReturnType<RunFunction>> {
-    const w = getWorker();
-    // keep the process alive while solving, but not while idle
-    w.ref?.();
-    return new Promise<ReturnType<RunFunction>>((resolve) => {
+  ): Promise<ReturnType<RunFunction> | null> {
+    return new Promise<ReturnType<RunFunction> | null>((resolve) => {
       active = { resolve, onModel };
-      w.postMessage(message);
+      try {
+        const w = getWorker();
+        // keep the process alive while solving, but not while idle
+        w.ref?.();
+        w.postMessage(message);
+      } catch (e) {
+        // e.g. spawning the worker failed
+        fail(e);
+      }
     }).finally(() => worker?.unref?.());
   }
 
@@ -68,7 +78,7 @@ export function createClient(spawn: () => ClingoWorker) {
   function enqueue(
     message: Messages,
     onModel?: OnModel
-  ): Promise<ReturnType<RunFunction>> {
+  ): Promise<ReturnType<RunFunction> | null> {
     const result = queue.then(() => request(message, onModel));
     queue = result.catch(() => {});
     return result;
@@ -78,10 +88,11 @@ export function createClient(spawn: () => ClingoWorker) {
     ...args: Parameters<RunFunction>
   ): Promise<ReturnType<RunFunction>> {
     const [program, models, options, onModel] = args;
-    return enqueue(
+    // run replies always carry a result
+    return (await enqueue(
       { type: "run", args: [program, models, options], stream: !!onModel },
       onModel
-    );
+    ))!;
   }
 
   /** Initializes clingo up front, optionally with a custom wasm url. */
@@ -94,7 +105,8 @@ export function createClient(spawn: () => ClingoWorker) {
 
   /**
    * Terminates the worker, aborting a running solve: the pending run resolves
-   * with an error result and the next run starts a fresh worker.
+   * with an error result, queued runs continue on a fresh worker, and a given
+   * wasm url applies to the runs submitted after this call.
    */
   async function restart(wasmUrl?: string): Promise<void> {
     if (worker) {

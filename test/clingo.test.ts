@@ -11,7 +11,7 @@ const entry = new URL("../dist/index.node.js", import.meta.url);
 if (!existsSync(entry)) {
   throw new Error("dist/index.node.js is missing; run `npm run build` first.");
 }
-const { run, stream, restart } = await import(entry.href);
+const { run, stream, restart, init } = await import(entry.href);
 
 describe("default export", () => {
   it("should expose the documented API", async () => {
@@ -187,6 +187,49 @@ describe("restart", () => {
     },
     30000
   );
+
+  it(
+    "should let queued runs continue after an abort",
+    async () => {
+      const running = run("{a(1..24)}.", 0);
+      const queued = run("b.");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await restart();
+
+      expect((await running).Result).toBe("ERROR");
+      expect((await queued).Result).toBe("SATISFIABLE");
+    },
+    30000
+  );
+});
+
+describe("init", () => {
+  it("should reject for an unusable wasm url and recover", async () => {
+    await expect(init("/does/not/exist.wasm")).rejects.toThrow();
+    const { Result } = (await run("a.")) as ClingoResult;
+    expect(Result).toBe("SATISFIABLE");
+  });
+
+  it("should use the given wasm and select the single-threaded build", async () => {
+    await restart(new URL("../dist/clingo.wasm", import.meta.url).pathname);
+    expect((await run("a.")).Result).toBe("SATISFIABLE");
+    // the single-threaded build rejects parallel solving options
+    expect((await run("a.", 0, ["-t 2"])).Result).toBe("ERROR");
+    await restart(); // back to the default builds for other tests
+  });
+});
+
+describe("queueing", () => {
+  it("should serialize concurrent runs and pair results correctly", async () => {
+    const [a, b, bad] = await Promise.all([
+      run("a.", 0),
+      run("b.", 0),
+      run("this is invalid"),
+    ]);
+    expect((a as ClingoResult).Call[0].Witnesses[0].Value).toEqual(["a"]);
+    expect((b as ClingoResult).Call[0].Witnesses[0].Value).toEqual(["b"]);
+    expect(bad.Result).toBe("ERROR");
+  });
 });
 
 describe("WitnessParser", () => {
